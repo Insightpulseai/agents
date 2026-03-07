@@ -1,0 +1,386 @@
+{
+  "name": "GitHub Webhook Receiver (pulser-hub)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "github/pulser-hub",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-receiver",
+      "name": "Webhook (GitHub Events)",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1.1,
+      "position": [250, 300],
+      "webhookId": "github-pulser-hub"
+    },
+    {
+      "parameters": {
+        "jsCode": "const crypto = require(\"crypto\");\n\nconst secret = $env.GITHUB_APP_WEBHOOK_SECRET;\nconst sig = $headers[\"x-hub-signature-256\"];\nconst body = JSON.stringify($json);\n\nif (!sig || !secret) {\n  throw new Error(\"Missing signature or secret\");\n}\n\nconst hmac = crypto.createHmac(\"sha256\", secret).update(body).digest(\"hex\");\nconst expected = `sha256=${hmac}`;\n\nif (sig !== expected) {\n  throw new Error(\"Invalid signature\");\n}\n\nreturn $input.all();"
+      },
+      "id": "verify-signature",
+      "name": "Verify Signature",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const event = $headers[\"x-github-event\"];\nconst action = $json.action || \"\";\nconst delivery = $headers[\"x-github-delivery\"];\n\nreturn [{\n  json: {\n    event,\n    action,\n    delivery,\n    payload: $json,\n    timestamp: new Date().toISOString()\n  }\n}];"
+      },
+      "id": "normalize-event",
+      "name": "Normalize Event",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [650, 300]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.event }}",
+                    "rightValue": "issues",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  },
+                  {
+                    "leftValue": "={{ $json.action }}",
+                    "rightValue": "opened,labeled",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "issues"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.event }}",
+                    "rightValue": "pull_request",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  },
+                  {
+                    "leftValue": "={{ $json.action }}",
+                    "rightValue": "opened,synchronize,closed",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "pull_requests"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.event }}",
+                    "rightValue": "workflow_run",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  },
+                  {
+                    "leftValue": "={{ $json.action }}",
+                    "rightValue": "completed",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "workflows"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.event }}",
+                    "rightValue": "push",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "push"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "route-events",
+      "name": "Route Events",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3,
+      "position": [850, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Auto-label issues based on content and keywords\nconst payload = $json.payload;\nconst title = payload.issue?.title || \"\";\nconst body = payload.issue?.body || \"\";\nconst text = `${title} ${body}`.toLowerCase();\nconst labels = [];\n\n// Learning detection\nif (text.includes('learn.microsoft.com') ||\n    text.includes('learning') ||\n    title.toLowerCase().startsWith('learn:')) {\n  labels.push('learning');\n}\n\n// Azure detection\nif (text.includes('azure') || text.includes('az-')) {\n  labels.push('azure');\n}\n\n// Documentation detection\nif (text.includes('documentation') || text.includes('docs')) {\n  labels.push('documentation');\n}\n\n// Bug detection\nif (text.includes('bug') || text.includes('error') || text.includes('fix')) {\n  labels.push('bug');\n}\n\n// Feature detection\nif (text.includes('feature') || text.includes('enhancement')) {\n  labels.push('enhancement');\n}\n\nreturn [{\n  json: {\n    ...payload,\n    suggested_labels: labels,\n    issue_url: payload.issue?.html_url,\n    repo: payload.repository?.full_name\n  }\n}];"
+      },
+      "id": "auto-label-issues",
+      "name": "Auto-label Issues",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1050, 200]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Determine which project to add PR to based on labels\nconst payload = $json.payload;\nconst pr = payload.pull_request;\nconst labels = pr?.labels?.map(l => l.name) || [];\nconst branch = pr?.head?.ref || \"\";\n\nlet project = null;\nlet status = \"Next\";\n\n// Delivery Ops triggers\nif (labels.includes('feature') || branch.startsWith('feature/')) {\n  project = \"TEMPLATE - Delivery Ops\";\n  status = \"In Progress\";\n} else if (labels.includes('bug') || branch.startsWith('fix/') || branch.startsWith('bugfix/')) {\n  project = \"TEMPLATE - Delivery Ops\";\n  status = \"In Progress\";\n} else if (labels.includes('documentation')) {\n  project = \"TEMPLATE - Delivery Ops\";\n  status = \"Next\";\n}\n\nreturn [{\n  json: {\n    ...payload,\n    target_project: project,\n    target_status: status,\n    pr_url: pr?.html_url,\n    repo: payload.repository?.full_name\n  }\n}];"
+      },
+      "id": "route-pr-to-project",
+      "name": "Route PR to Project",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1050, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Log workflow run to Supabase ops.run_events\nconst payload = $json.payload;\nconst run = payload.workflow_run;\n\nreturn [{\n  json: {\n    event_type: \"workflow_run\",\n    status: run?.conclusion || \"unknown\",\n    workflow_name: run?.name,\n    run_id: run?.id,\n    run_url: run?.html_url,\n    repo: payload.repository?.full_name,\n    branch: run?.head_branch,\n    duration_ms: run?.duration || 0,\n    created_at: run?.created_at,\n    completed_at: run?.updated_at\n  }\n}];"
+      },
+      "id": "log-workflow-run",
+      "name": "Log Workflow Run",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1050, 400]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Track push events for commit metrics\nconst payload = $json.payload;\n\nreturn [{\n  json: {\n    event_type: \"push\",\n    repo: payload.repository?.full_name,\n    branch: payload.ref?.replace('refs/heads/', ''),\n    commits_count: payload.commits?.length || 0,\n    pusher: payload.pusher?.name,\n    compare_url: payload.compare,\n    created_at: new Date().toISOString()\n  }\n}];"
+      },
+      "id": "track-push-event",
+      "name": "Track Push Event",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1050, 500]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO ops.run_events (kind, status, payload, created_at)\\nVALUES (\\n  {{ $json.event_type }},\\n  {{ $json.status || 'completed' }},\\n  {{ $json }},\\n  {{ $json.created_at || 'now()' }}\\n)",
+        "options": {}
+      },
+      "id": "write-to-supabase",
+      "name": "Write to Supabase",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.4,
+      "position": [1250, 350],
+      "credentials": {
+        "postgres": {
+          "id": "supabase-ops",
+          "name": "Supabase Ops DB"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ {\\n  \"status\": \"ok\",\\n  \"event\": $json.event,\\n  \"action\": $json.action,\\n  \"delivery\": $json.delivery\\n} }}",
+        "options": {}
+      },
+      "id": "respond-ok",
+      "name": "Respond (200 OK)",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [1450, 300]
+    },
+    {
+      "parameters": {
+        "httpCode": 401,
+        "respondWith": "json",
+        "responseBody": "={{ {\\n  \"error\": \"Invalid signature\"\\n} }}",
+        "options": {}
+      },
+      "id": "respond-unauthorized",
+      "name": "Respond (401 Unauthorized)",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [450, 500]
+    }
+  ],
+  "connections": {
+    "Webhook (GitHub Events)": {
+      "main": [
+        [
+          {
+            "node": "Verify Signature",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verify Signature": {
+      "main": [
+        [
+          {
+            "node": "Normalize Event",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Event": {
+      "main": [
+        [
+          {
+            "node": "Route Events",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Route Events": {
+      "main": [
+        [
+          {
+            "node": "Auto-label Issues",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Route PR to Project",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Log Workflow Run",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Track Push Event",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Auto-label Issues": {
+      "main": [
+        [
+          {
+            "node": "Write to Supabase",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Route PR to Project": {
+      "main": [
+        [
+          {
+            "node": "Write to Supabase",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log Workflow Run": {
+      "main": [
+        [
+          {
+            "node": "Write to Supabase",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Track Push Event": {
+      "main": [
+        [
+          {
+            "node": "Write to Supabase",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Write to Supabase": {
+      "main": [
+        [
+          {
+            "node": "Respond (200 OK)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [
+    {
+      "createdAt": "2026-01-08T07:00:00.000Z",
+      "updatedAt": "2026-01-08T07:00:00.000Z",
+      "id": "github-automation",
+      "name": "GitHub Automation"
+    }
+  ],
+  "triggerCount": 1,
+  "updatedAt": "2026-01-08T07:00:00.000Z",
+  "versionId": "1"
+}
