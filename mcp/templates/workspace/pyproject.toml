@@ -1,0 +1,29 @@
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+respect-gitignore = true
+exclude = [
+  ".git",
+  ".venv",
+  "__pycache__",
+  "odoo",
+  "oca",
+  "vendor",
+  "out",
+  "artifacts",
+  "seed_export",
+  "docs/data-model",
+  "supabase",
+  "clients",
+  "packages",
+]
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]
+ignore = ["E501"]
+
+[tool.ruff.lint.per-file-ignores]
+"addons/**/__init__.py" = ["F401"]
+
+[tool.ruff.format]
+quote-style = "preserve"

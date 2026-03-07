@@ -1,0 +1,17 @@
+{
+  "folders": [
+    { "path": "." }
+  ],
+  "settings": {
+    "ruff.configuration": "${workspaceFolder}/pyproject.toml",
+    "search.exclude": {
+      "odoo/**": true,
+      "oca/**": true,
+      "vendor/**": true,
+      "out/**": true,
+      "artifacts/**": true,
+      "seed_export/**": true,
+      "docs/data-model/**": true
+    }
+  }
+}

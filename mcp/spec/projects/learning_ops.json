@@ -1,0 +1,55 @@
+{
+  "title": "TEMPLATE - Learning Ops",
+  "description": "Template for tracking learning activities, modules, labs, and certifications",
+  "fields": [
+    {
+      "name": "Status",
+      "type": "single_select",
+      "options": ["Backlog", "Next", "In Progress", "Blocked", "Done", "Archived"]
+    },
+    {
+      "name": "Track",
+      "type": "single_select",
+      "options": [
+        "Azure Fundamentals",
+        "AI/Agents",
+        "Power BI",
+        "Security",
+        "Odoo",
+        "Supabase",
+        "DevOps"
+      ]
+    },
+    {
+      "name": "Type",
+      "type": "single_select",
+      "options": ["Module", "Lab", "Reading", "Build", "Writeup", "Exam"]
+    },
+    {
+      "name": "Outcome",
+      "type": "single_select",
+      "options": ["Notes", "Demo", "PR", "Checklist", "Blog"]
+    },
+    {
+      "name": "Effort (min)",
+      "type": "number"
+    },
+    {
+      "name": "Difficulty",
+      "type": "single_select",
+      "options": ["1", "2", "3", "4", "5"]
+    },
+    {
+      "name": "Link",
+      "type": "text"
+    },
+    {
+      "name": "Artifact",
+      "type": "text"
+    },
+    {
+      "name": "Due",
+      "type": "date"
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "title": "TEMPLATE - Delivery Ops",
+  "description": "Template for tracking feature delivery, bugs, and infrastructure work",
+  "fields": [
+    {
+      "name": "Status",
+      "type": "single_select",
+      "options": ["Backlog", "Ready", "In Progress", "Review", "Blocked", "Done"]
+    },
+    {
+      "name": "Repo",
+      "type": "single_select",
+      "options": [
+        "pulser-agent-framework",
+        "pulser-mcp",
+        "odoomation",
+        "landing.io",
+        "demo-repository"
+      ]
+    },
+    {
+      "name": "Type",
+      "type": "single_select",
+      "options": ["Feature", "Bug", "Chore", "Security", "Infra", "Docs"]
+    },
+    {
+      "name": "Priority",
+      "type": "single_select",
+      "options": ["P0", "P1", "P2", "P3"]
+    },
+    {
+      "name": "Effort",
+      "type": "single_select",
+      "options": ["S", "M", "L", "XL"]
+    },
+    {
+      "name": "Release",
+      "type": "text"
+    },
+    {
+      "name": "Due",
+      "type": "date"
+    },
+    {
+      "name": "Artifact",
+      "type": "text"
+    }
+  ]
+}

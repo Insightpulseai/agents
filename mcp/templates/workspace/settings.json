@@ -1,0 +1,42 @@
+{
+  "files.eol": "\n",
+  "python.defaultInterpreterPath": ".venv/bin/python",
+  "python.analysis.typeCheckingMode": "basic",
+  "editor.formatOnSave": true,
+  "ruff.enable": true,
+  "ruff.configuration": "${workspaceFolder}/pyproject.toml",
+  "ruff.organizeImports": true,
+  "search.exclude": {
+    "**/.git": true,
+    "**/.venv": true,
+    "**/__pycache__": true,
+    "odoo/**": true,
+    "oca/**": true,
+    "vendor/**": true,
+    "out/**": true,
+    "artifacts/**": true,
+    "seed_export/**": true,
+    "docs/data-model/**": true
+  },
+  "files.watcherExclude": {
+    "**/.git/**": true,
+    "**/.venv/**": true,
+    "**/__pycache__/**": true,
+    "odoo/**": true,
+    "oca/**": true,
+    "vendor/**": true,
+    "out/**": true,
+    "artifacts/**": true,
+    "seed_export/**": true,
+    "docs/data-model/**": true
+  },
+  "python.analysis.exclude": [
+    "odoo/**",
+    "oca/**",
+    "vendor/**",
+    "out/**",
+    "artifacts/**",
+    "seed_export/**",
+    "docs/data-model/**"
+  ]
+}
