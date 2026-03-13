@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Agent Gateway configuration defaults -->
+        <!-- Rate limits, allowed models, and other gateway settings -->
+        <!-- are managed via system parameters for flexibility -->
+
+        <record id="agent_gateway_rate_limit" model="ir.config_parameter">
+            <field name="key">ipai_agent_gateway.rate_limit_per_second</field>
+            <field name="value">100</field>
+        </record>
+
+        <record id="agent_gateway_timeout" model="ir.config_parameter">
+            <field name="key">ipai_agent_gateway.default_timeout_seconds</field>
+            <field name="value">30</field>
+        </record>
+
+        <record id="agent_gateway_audit_enabled" model="ir.config_parameter">
+            <field name="key">ipai_agent_gateway.audit_enabled</field>
+            <field name="value">True</field>
+        </record>
+    </data>
+</odoo>
