@@ -43,14 +43,15 @@ export class DeveloperAgent {
   private classifyDevTask(message: string): DevTaskType {
     const lower = message.toLowerCase();
 
+    // Check specific patterns before broad ones to avoid keyword overlap
     if (lower.includes("scaffold") || lower.includes("new addon") || lower.includes("new module")) return "scaffold_addon";
+    if (lower.includes("test")) return "generate_test";
+    if (lower.includes("pr ") || lower.includes("review") || lower.includes("pull request")) return "review_pr";
+    if (lower.includes("manifest") || lower.includes("__manifest__")) return "validate_manifest";
+    if (lower.includes("migrate") || lower.includes("upgrade")) return "migrate_version";
+    if (/\borm\b/.test(lower) || lower.includes("domain") || lower.includes("computed")) return "explain_orm";
     if (lower.includes("view") || lower.includes("xml") || lower.includes("form") || lower.includes("list")) return "generate_view";
     if (lower.includes("model") || lower.includes("class") || lower.includes("field")) return "generate_model";
-    if (lower.includes("test")) return "generate_test";
-    if (lower.includes("pr") || lower.includes("review") || lower.includes("pull request")) return "review_pr";
-    if (lower.includes("manifest") || lower.includes("__manifest__")) return "validate_manifest";
-    if (lower.includes("migrate") || lower.includes("upgrade") || lower.includes("version")) return "migrate_version";
-    if (lower.includes("orm") || lower.includes("domain") || lower.includes("computed")) return "explain_orm";
     return "general";
   }
 
