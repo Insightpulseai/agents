@@ -1,0 +1,180 @@
+# Agent Capability Matrix — InsightPulseAI
+# System: odoo_copilot_foundry
+# Topology: 3 agents + 1 workflow
+# Last updated: 2026-03-15
+
+version: "2.0.0"
+system: odoo_copilot_foundry
+
+components:
+  - name: ipai-odoo-copilot-advisory
+    form: foundry_prompt_agent
+    runtime: foundry_control_plane
+    purpose: "User-facing grounded copilot. Read-only. No writes."
+    capability_packs:
+      - databricks_intelligence_pack
+      - fal_creative_production_pack
+      - marketing_strategy_insight_pack
+    tools:
+      - code_interpreter
+      - azure_ai_search
+      - bing_grounding
+    allowed_actions:
+      - informational_qa
+      - navigational_guidance
+      - citation_grounded_retrieval
+      - handoff_cta
+    blocked_actions:
+      - odoo_write
+      - odoo_delete
+      - bulk_export
+      - credential_access
+      - raw_sql
+    evals:
+      - advisory
+      - safety
+
+  - name: ipai-odoo-copilot-ops
+    form: agent_framework_agent
+    runtime: agent_framework_execution_plane
+    purpose: "Internal diagnostics and read-only tool access."
+    capability_packs:
+      - databricks_intelligence_pack
+      - fal_creative_production_pack
+      - marketing_strategy_insight_pack
+    tools:
+      - code_interpreter
+      - openapi_bridge_read
+      - databricks_query
+      - system_status
+    allowed_actions:
+      - read_odoo_records
+      - read_databricks_tables
+      - read_system_metrics
+      - read_logs
+    blocked_actions:
+      - odoo_write
+      - odoo_delete
+      - credential_access
+      - secret_disclosure
+      - raw_sql
+    evals:
+      - ops
+      - safety
+
+  - name: ipai-odoo-copilot-actions
+    form: agent_framework_agent
+    runtime: agent_framework_execution_plane
+    purpose: "Approved writes and bounded execution only."
+    capability_packs:
+      - databricks_intelligence_pack
+      - fal_creative_production_pack
+    tools:
+      - code_interpreter
+      - openapi_bridge_read
+      - openapi_bridge_write
+      - databricks_query
+      - fal_media_api
+    allowed_actions:
+      - create_odoo_record
+      - update_odoo_record
+      - execute_databricks_job
+      - generate_creative_asset
+    blocked_actions:
+      - odoo_delete
+      - bulk_write_without_approval
+      - credential_access
+      - raw_sql
+      - bypass_router_approval
+    evals:
+      - actions
+      - safety
+    safety_requirements:
+      - approval_checkpoint_required
+      - confirmation_card_displayed
+      - audit_trail_entry_per_write
+      - bounded_scope_enforcement
+
+  - name: ipai-odoo-copilot-router
+    form: agent_framework_workflow
+    runtime: agent_framework_execution_plane
+    purpose: "Deterministic routing, approvals, handoffs, and checkpoints."
+    capability_packs:
+      - databricks_intelligence_pack
+      - fal_creative_production_pack
+    tools: []
+    allowed_actions:
+      - route_to_advisory
+      - route_to_ops
+      - route_to_actions
+      - escalate
+      - checkpoint_state
+      - request_approval
+      - handoff_to_human
+    blocked_actions:
+      - direct_tool_execution
+      - odoo_write
+      - credential_access
+    evals:
+      - router
+      - safety
+
+capability_packs:
+  - id: databricks_intelligence_pack
+    purpose: "Lakehouse queries, analytics marts, ML predictions"
+    vendor: databricks
+    domain_runtimes: [databricks, lakeflow, apps]
+    consumers: [advisory, ops, actions, router]
+
+  - id: fal_creative_production_pack
+    purpose: "Image/video generation, creative asset pipeline"
+    vendor: fal
+    domain_runtimes: [fal_media_runtime]
+    consumers: [advisory, ops, actions, router]
+
+  - id: marketing_strategy_insight_pack
+    purpose: "Consumer intelligence, market analysis, evidence synthesis"
+    vendor: internal
+    domain_runtimes: []
+    consumers: [advisory, ops]
+
+runtime_split:
+  foundry_control_plane:
+    owns:
+      - prompt_agents
+      - datasets
+      - evaluations
+      - tracing_collection
+      - project_scoped_resources
+    does_not_own:
+      - workflows
+      - middleware
+      - checkpointing
+      - approvals
+  agent_framework_execution_plane:
+    owns:
+      - workflows
+      - middleware
+      - checkpointing
+      - orchestration
+      - approvals
+      - tool_execution
+    does_not_own:
+      - prompt_agents
+      - datasets
+      - evaluations
+
+evaluation_model:
+  system_evaluations:
+    purpose: "Automated quality metrics"
+    types: [groundedness, relevance, coherence, fluency, similarity]
+    note: "Necessary but not sufficient for safety"
+  process_evaluations:
+    purpose: "Tool and workflow behavior"
+    types: [tool_call_accuracy, routing_correctness, approval_compliance]
+    note: "Some evaluators limited by Azure AI Search availability"
+  safety_evaluations:
+    purpose: "Harm prevention and policy compliance"
+    types: [violence, self_harm, sexual, hate_unfairness, indirect_attack, protected_material]
+    note: "Safety evaluations require human review and policy tests — automated scores alone are insufficient"
+    human_review_required: true

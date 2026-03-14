@@ -1,0 +1,150 @@
+# Agent Ingress Matrix — InsightPulseAI
+# Maps agent surfaces to network ingress, auth, and routing
+# Canonical owner: infra repo (copy here for CI validation)
+# Last updated: 2026-03-15
+
+version: "1.0.0"
+system: odoo_copilot_foundry
+
+ingress:
+  production:
+    name: apim_ai_gateway
+    type: azure_apim
+    purpose: "Production front door — rate limiting, auth, routing, observability"
+    is_production: true
+  playground:
+    name: foundry_playground
+    type: foundry_portal
+    purpose: "Prototyping and testing only"
+    is_production: false
+
+surfaces:
+  - id: landing_page
+    description: "Public advisory copilot on marketing site"
+    ingress:
+      hostname: "insightpulseai.com"
+      path: "/api/copilot/chat"
+      method: POST
+      edge: azure_front_door
+      backend: container_apps
+      container_app: ipai-landing-chat
+      production_ingress: apim_ai_gateway
+    auth:
+      type: anonymous
+      session: "client-generated sessionId → Cosmos lookup"
+      token_flow: "server-side managed identity → Foundry"
+    agent:
+      foundry_project: ipai-copilot
+      agent_id: ipai-odoo-copilot-advisory
+      environment_mode: PROD-ADVISORY
+    guardrails:
+      - pii_redaction_middleware
+      - surface_validation
+      - rate_limiting
+    observability:
+      application_insights: true
+      dependency_tracking: true
+      session_hash: sha256_first_16
+
+  - id: odoo_sidebar
+    description: "In-ERP copilot sidebar within Odoo 19"
+    ingress:
+      hostname: "erp.insightpulseai.com"
+      path: "/web/copilot/chat"
+      method: POST
+      edge: azure_front_door
+      backend: container_apps
+      container_app: ipai-odoo-dev-web
+      production_ingress: apim_ai_gateway
+    auth:
+      type: entra_sso
+      session: "Odoo session → user_id → Cosmos lookup"
+      token_flow: "Odoo backend → managed identity → Foundry"
+    agent:
+      foundry_project: ipai-copilot
+      agent_id: ipai-odoo-copilot-router
+      environment_mode: PROD-ACTION
+    guardrails:
+      - pii_redaction_middleware
+      - surface_validation
+      - entra_group_check
+      - tool_scope_restriction
+      - confirmation_protocol
+    observability:
+      application_insights: true
+      dependency_tracking: true
+      user_id_hash: sha256_first_16
+      audit_ledger: true
+    status: not_started
+    blocker: "ipai_ai_copilot module not migrated to 19.0"
+
+  - id: m365_teams
+    description: "Teams bot or Copilot Studio topic for internal staff"
+    ingress:
+      hostname: "teams.microsoft.com"
+      path: "bot framework / Copilot Studio topic"
+      method: "Bot Framework activity"
+      edge: microsoft_bot_service
+      backend: "Copilot Studio → Foundry"
+      production_ingress: apim_ai_gateway
+    auth:
+      type: entra_sso
+      session: "Teams conversation_id → Cosmos lookup"
+      token_flow: "Bot identity → managed identity → Foundry"
+    agent:
+      foundry_project: ipai-copilot
+      agent_id: ipai-odoo-copilot-advisory
+      environment_mode: PROD-ADVISORY
+    guardrails:
+      - pii_redaction
+      - surface_validation
+      - entra_group_check
+      - read_only_tool_scope
+    observability:
+      application_insights: true
+      teams_activity_logging: true
+    status: not_started
+    blocker: "Requires Copilot Studio setup or custom Teams bot"
+
+  - id: m365_copilot
+    description: "Declarative agent in M365 Copilot"
+    ingress:
+      hostname: "copilot.microsoft.com"
+      path: "declarative agent manifest"
+      method: "M365 Copilot plugin protocol"
+      edge: microsoft_copilot_runtime
+      backend: "Copilot Studio → Foundry"
+      production_ingress: apim_ai_gateway
+    auth:
+      type: entra_sso
+      session: "M365 Copilot session → Cosmos lookup"
+      token_flow: "M365 identity → managed identity → Foundry"
+    agent:
+      foundry_project: ipai-copilot
+      agent_id: ipai-odoo-copilot-advisory
+      environment_mode: PROD-ADVISORY
+    guardrails:
+      - pii_redaction
+      - surface_validation
+      - entra_group_check
+      - m365_copilot_safety_layer
+    observability:
+      application_insights: true
+    status: not_started
+    blocker: "Requires M365 Copilot license + declarative agent YAML"
+
+network_rules:
+  - rule: "All Foundry traffic uses managed identity, never client secrets"
+  - rule: "Landing page is the only anonymous surface; all others require Entra SSO"
+  - rule: "PII redaction applies to all surfaces as cross-cutting control"
+  - rule: "Write operations (PROD-ACTION) only available on odoo_sidebar surface"
+  - rule: "Rate limiting on landing_page: 10 req/min per session"
+  - rule: "All surfaces log to Application Insights with hashed identifiers"
+  - rule: "APIM AI Gateway is the only production front door"
+  - rule: "Foundry Playgrounds are non-production — prototyping only"
+
+migration_path:
+  current: [landing_page]
+  phase_2: [landing_page, odoo_sidebar]
+  phase_3: [landing_page, odoo_sidebar, m365_teams]
+  phase_4: [landing_page, odoo_sidebar, m365_teams, m365_copilot]

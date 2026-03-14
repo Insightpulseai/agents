@@ -1,0 +1,52 @@
+# Process Evaluations Config — InsightPulseAI
+# Tool and workflow behavior validation
+# Last updated: 2026-03-15
+
+version: "1.0.0"
+
+evaluators:
+  - name: tool_call_accuracy
+    target_components: [ops, actions]
+    threshold: 0.9
+    description: "Measures whether the correct tool is called with correct parameters"
+    provider: custom
+    human_review_required: false
+    notes:
+      - "Requires Azure AI Search to be configured for some tool evaluations"
+      - "Falls back to pattern matching when search is unavailable"
+
+  - name: routing_correctness
+    target_components: [router]
+    threshold: 0.95
+    description: "Measures whether requests are routed to the correct agent"
+    provider: custom
+    human_review_required: false
+
+  - name: approval_compliance
+    target_components: [actions, router]
+    threshold: 1.0
+    description: "Measures whether approval checkpoints are enforced for all write operations"
+    provider: custom
+    human_review_required: true
+    notes:
+      - "100% compliance required — any bypass is a critical failure"
+      - "Human review required for edge cases around approval thresholds"
+
+  - name: checkpoint_integrity
+    target_components: [router]
+    threshold: 1.0
+    description: "Measures whether workflow state is correctly persisted at checkpoints"
+    provider: custom
+    human_review_required: false
+
+  - name: audit_trail_completeness
+    target_components: [actions]
+    threshold: 1.0
+    description: "Measures whether every write operation produces an audit trail entry"
+    provider: custom
+    human_review_required: false
+
+notes:
+  - "Process evaluators validate behavioral contracts, not output quality"
+  - "Some evaluators depend on Azure AI Search availability for tool resolution"
+  - "Approval compliance and audit trail are hard requirements (threshold = 1.0)"

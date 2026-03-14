@@ -1,0 +1,46 @@
+# System Evaluations Config — InsightPulseAI
+# Automated quality metrics for agent outputs
+# Last updated: 2026-03-15
+
+version: "1.0.0"
+
+evaluators:
+  - name: groundedness
+    target_components: [advisory, ops]
+    threshold: 0.8
+    description: "Measures whether responses are grounded in provided context/knowledge"
+    provider: azure_ai_foundry
+    human_review_required: false
+
+  - name: relevance
+    target_components: [advisory, ops, actions]
+    threshold: 0.8
+    description: "Measures whether responses are relevant to the user query"
+    provider: azure_ai_foundry
+    human_review_required: false
+
+  - name: coherence
+    target_components: [advisory, ops]
+    threshold: 0.7
+    description: "Measures logical consistency and readability of responses"
+    provider: azure_ai_foundry
+    human_review_required: false
+
+  - name: fluency
+    target_components: [advisory]
+    threshold: 0.8
+    description: "Measures grammatical correctness and natural language quality"
+    provider: azure_ai_foundry
+    human_review_required: false
+
+  - name: similarity
+    target_components: [advisory, ops]
+    threshold: 0.7
+    description: "Measures response similarity to expected ground truth"
+    provider: azure_ai_foundry
+    human_review_required: false
+
+notes:
+  - "System evaluations are necessary but not sufficient for production readiness"
+  - "All evaluators run against Foundry datasets defined in eval/datasets/"
+  - "Thresholds are minimum pass criteria — higher is better"
