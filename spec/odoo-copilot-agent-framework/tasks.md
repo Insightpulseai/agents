@@ -52,16 +52,16 @@
 
 ## Workstream 6 — Agent Matrix + Ingress Matrix SSOT
 
-- [ ] **M.1** Add agent matrix to PRD
-- [ ] **M.2** Add capability-pack matrix to PRD
-- [ ] **M.3** Add ingress matrix to plan
-- [ ] **M.4** Add component ingress ownership table to plan
-- [ ] **M.5** Add Foundry vs Agent Framework split section
-- [ ] **M.6** Add evaluation model section
-- [ ] **M.7** Add safety-evaluation caveat section
-- [ ] **M.8** Create `infra/ssot/platform/agent_ingress_matrix.yaml`
-- [ ] **M.9** Create `infra/ssot/agents/agent_capability_matrix.yaml`
-- [ ] **M.10** Create eval dataset manifests for advisory / ops / actions / router
+- [x] **M.1** Add agent matrix to PRD
+- [x] **M.2** Add capability-pack matrix to PRD
+- [x] **M.3** Add ingress matrix to plan
+- [x] **M.4** Add component ingress ownership table to plan
+- [x] **M.5** Add Foundry vs Agent Framework split section
+- [x] **M.6** Add evaluation model section
+- [x] **M.7** Add safety-evaluation caveat section
+- [x] **M.8** Create `infra/ssot/platform/agent_ingress_matrix.yaml`
+- [x] **M.9** Create `infra/ssot/agents/agent_capability_matrix.yaml`
+- [x] **M.10** Create eval dataset manifests for advisory / ops / actions / router
 - [ ] **M.11** Wire App Insights + Foundry tracing correlation IDs
 - [ ] **M.12** Add APIM AI gateway as required production ingress
 
@@ -76,7 +76,37 @@
 ## Cross-Cutting
 
 - [ ] **X.1** Ensure all agent invocations produce App Insights telemetry
-- [ ] **X.2** Add YAML parse validation to CI
-- [ ] **X.3** Add spec-SSOT consistency checks to CI
-- [ ] **X.4** Ensure no deprecated web-owned SSOT paths remain
+- [x] **X.2** Add YAML parse validation to CI
+- [x] **X.3** Add spec-SSOT consistency checks to CI
+- [x] **X.4** Ensure no deprecated web-owned SSOT paths remain
 - [ ] **X.5** Add capability-class tagging to all tools (informational/navigational/transactional)
+
+## Workstream 8 — Live Environment Realization
+
+### Phase A — Foundry realization
+
+- [ ] **F.1** Map `ipai-odoo-copilot-azure` to Advisory role in Foundry `data-intel-ph`
+- [ ] **F.2** Upload / connect canonical knowledge assets to Foundry IQ / Azure AI Search
+- [ ] **F.3** Register guardrails and eval configurations in Foundry project
+- [ ] **F.4** Enable tracing + App Insights correlation for agent runs
+- [ ] **F.5** Stand up Router runtime behind Advisory surface
+- [ ] **F.6** Stand up Ops runtime with read-only Odoo and Databricks inspection tools
+- [ ] **F.7** Stand up Actions runtime with approval-gated Odoo action contracts
+- [ ] **F.8** Put APIM in front as production ingress
+
+### Phase B — Odoo realization
+
+- [ ] **F.9** Create Odoo company-scoped Finance PPM / BIR projects with recurring tasks, dependencies, milestones, and activities
+- [ ] **F.10** Normalize and import month-end/BIR workbook into Odoo task templates
+- [ ] **F.11** Implement PLM-style approval gates at validation and filing stage transitions
+
+### Phase C — Databricks realization
+
+- [ ] **F.12** Expose Databricks gold/platinum views for Finance PPM status, close progress, and tax compliance signals
+- [ ] **F.13** Verify scheduled jobs/pipelines and restore healthy execution evidence
+
+### Phase D — Integration
+
+- [ ] **F.14** Wire Foundry Advisory / Ops / Actions to inspect Odoo workflow state and Databricks intelligence views
+- [ ] **F.15** Verify APIM routes, auth, quotas, and observability are operational
+- [ ] **F.16** Run first end-to-end trace from user request through Advisory → Router → Ops/Actions → Odoo/Databricks and back

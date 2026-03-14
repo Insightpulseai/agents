@@ -45,3 +45,11 @@
 - [ ] **E.8** Create BIR SFT validation set (bir_sft_valid.jsonl)
 - [ ] **E.9** Run baseline evaluation (prompt-only)
 - [ ] **E.10** Fine-tune and compare against baseline
+
+## Workstream — Tax Pulse Realization
+
+- [ ] **T.1** Load BIR knowledge corpus into grounding layer
+- [ ] **T.2** Port rates/rules artifacts into canonical Odoo 19 CE path
+- [ ] **T.3** Register BIR tool contracts in Advisory / Ops / Actions
+- [ ] **T.4** Bind Tax Pulse workflow to Odoo Project tasks and approval stages
+- [ ] **T.5** Publish first BIR eval run and baseline report
