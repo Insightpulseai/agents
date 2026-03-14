@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_ipai_foundry_provider_config_admin,ipai.foundry.provider.config admin,model_ipai_foundry_provider_config,base.group_system,1,1,1,1
+access_ipai_foundry_provider_config_user,ipai.foundry.provider.config user,model_ipai_foundry_provider_config,base.group_user,1,0,0,0
