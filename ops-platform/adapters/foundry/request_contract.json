@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CopilotRequest",
+  "description": "Request envelope sent from the backend adapter to the Foundry Agent Application.",
+  "type": "object",
+  "required": ["user_id", "session_id", "environment", "mode", "locale", "context", "message"],
+  "properties": {
+    "user_id": {
+      "type": "string",
+      "description": "Odoo user ID of the requesting user."
+    },
+    "session_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Unique session identifier for conversation continuity."
+    },
+    "environment": {
+      "type": "string",
+      "enum": ["staging", "production"],
+      "description": "Target environment."
+    },
+    "mode": {
+      "type": "string",
+      "enum": ["PROD-ADVISORY", "PROD-CONFIRMED"],
+      "description": "Operating mode for this request."
+    },
+    "locale": {
+      "type": "string",
+      "default": "en_PH",
+      "description": "Locale for response formatting."
+    },
+    "context": {
+      "type": "object",
+      "required": ["company_id"],
+      "properties": {
+        "current_model": {
+          "type": ["string", "null"],
+          "description": "Odoo model the user is currently viewing."
+        },
+        "current_record_id": {
+          "type": ["integer", "null"],
+          "description": "Record ID the user is currently viewing."
+        },
+        "company_id": {
+          "type": "string",
+          "description": "Odoo company ID."
+        },
+        "user_groups": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Odoo security groups the user belongs to."
+        }
+      }
+    },
+    "message": {
+      "type": "string",
+      "description": "The user's query or instruction."
+    }
+  }
+}

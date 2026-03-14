@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Copilot Sessions list view -->
+    <record id="view_copilot_session_tree" model="ir.ui.view">
+        <field name="name">ipai.copilot.session.tree</field>
+        <field name="model">ipai.copilot.session</field>
+        <field name="arch" type="xml">
+            <tree string="Copilot Sessions">
+                <field name="name"/>
+                <field name="user_id"/>
+                <field name="company_id"/>
+                <field name="state"/>
+                <field name="create_date"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Copilot Audit Log list view -->
+    <record id="view_copilot_audit_tree" model="ir.ui.view">
+        <field name="name">ipai.copilot.audit.tree</field>
+        <field name="model">ipai.copilot.audit</field>
+        <field name="arch" type="xml">
+            <tree string="Copilot Audit Log">
+                <field name="create_date"/>
+                <field name="user_id"/>
+                <field name="action_type"/>
+                <field name="target_model"/>
+                <field name="target_record_id"/>
+                <field name="outcome" decoration-success="outcome == 'confirmed'" decoration-danger="outcome == 'denied'"/>
+                <field name="confirmation_token"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Menu items -->
+    <menuitem id="menu_copilot_root"
+              name="Copilot"
+              sequence="90"
+              web_icon="ipai_odoo_copilot_bridge,static/description/icon.png"/>
+
+    <menuitem id="menu_copilot_sessions"
+              name="Sessions"
+              parent="menu_copilot_root"
+              action="action_copilot_sessions"
+              sequence="10"/>
+
+    <menuitem id="menu_copilot_audit"
+              name="Audit Log"
+              parent="menu_copilot_root"
+              action="action_copilot_audit"
+              sequence="20"/>
+
+    <!-- Actions -->
+    <record id="action_copilot_sessions" model="ir.actions.act_window">
+        <field name="name">Copilot Sessions</field>
+        <field name="res_model">ipai.copilot.session</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="action_copilot_audit" model="ir.actions.act_window">
+        <field name="name">Copilot Audit Log</field>
+        <field name="res_model">ipai.copilot.audit</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+</odoo>

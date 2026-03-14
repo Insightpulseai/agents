@@ -1,0 +1,41 @@
+name: ipai-odoo-copilot-azure
+version: "1.0.0"
+description: >
+  InsightPulseAI Odoo Copilot — Azure AI Foundry agent for compliance,
+  finance operations, and ERP assistance within the Odoo platform.
+
+runtime: azure-ai-foundry
+model: gpt-4o
+
+default_mode: PROD-ADVISORY
+
+modes:
+  PROD-ADVISORY:
+    description: Read-only advisory responses. No write actions permitted.
+    allow_writes: false
+  PROD-CONFIRMED:
+    description: Write actions allowed only after explicit user confirmation.
+    allow_writes: true
+    require_confirmation: true
+
+tools:
+  - compliance_calendar
+  - finding_lookup
+  - task_draft
+  - report_helper
+  - record_navigator
+
+knowledge:
+  - bir_tax_compliance.md
+  - vat_ewt_slsp_2307_guide.md
+  - company_policies.md
+
+publish:
+  staging:
+    auto_publish: false
+    requires_eval_pass: true
+  production:
+    auto_publish: false
+    requires_eval_pass: true
+    requires_staging_soak: true
+    min_staging_soak_hours: 24
