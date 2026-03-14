@@ -1,0 +1,60 @@
+{
+  "version": "1.0.0",
+  "last_updated": "2026-03-15",
+  "agents": [
+    {
+      "id": "ipai-odoo-copilot-azure",
+      "name": "IPAI Odoo Copilot",
+      "model": "gpt-4.1",
+      "foundry_agent_id": "asst_45er4aG28tFTABadwxEhODIf",
+      "surfaces": ["landing_page"],
+      "planned_surfaces": ["odoo_sidebar", "m365_teams", "m365_copilot"],
+      "instructions_version": "v6",
+      "instructions_target_version": "v7",
+      "response_modes": [
+        "ADVISORY",
+        "EXECUTION-DESIGN",
+        "EXECUTION-ACTION",
+        "COMPLIANCE",
+        "CALENDAR",
+        "CONTROL-TOWER",
+        "ESCALATION"
+      ],
+      "source_labels": [
+        "IPAI-KB",
+        "BIR-CALENDAR",
+        "BING-LIVE",
+        "ODOO-LIVE",
+        "INFERRED",
+        "ADVISORY",
+        "UNVERIFIED"
+      ],
+      "environment_modes": ["BUILD", "STAGING", "PROD-ADVISORY", "PROD-ACTION"],
+      "tools_connected": ["code_interpreter"],
+      "tools_missing": [
+        "knowledge_files",
+        "bing_grounding",
+        "openapi_bridge",
+        "memory",
+        "guardrails"
+      ],
+      "known_issues": [
+        {
+          "id": "phantom-module-names",
+          "description": "Instructions reference ipai_tax_compliance_* (6 modules) which do not exist",
+          "actual": "ipai_bir_tax_compliance (single module) and ipai_finance_close_seed",
+          "fix": "Update to v7 instructions"
+        }
+      ],
+      "capabilities": {
+        "informational": { "status": "partial", "note": "System prompt only, no KB" },
+        "navigational": { "status": "partial", "note": "Odoo menu paths in prompt" },
+        "transactional": { "status": "not_started", "note": "No write tools" },
+        "document_grounded": { "status": "not_started", "note": "No AI Search" },
+        "analytical": { "status": "not_started", "note": "No live data access" },
+        "governed": { "status": "partial", "note": "Source labels and escalation defined, no eval" }
+      }
+    }
+  ],
+  "feature_ledger_path": "infra/ssot/agents/feature_ledger.yaml"
+}

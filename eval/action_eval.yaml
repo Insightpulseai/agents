@@ -1,0 +1,60 @@
+# Action Eval Harness — InsightPulseAI
+# Gate: E-COP-01 (Enterprise Copilot Cross-Surface)
+# Validates transactional copilot capabilities
+# Last updated: 2026-03-15
+
+version: "1.0.0"
+gate_id: action_eval
+blocks_epic: E-COP-01
+depends_on: [knowledge_eval]
+
+eval_sets:
+  - id: transaction_confirmation
+    name: "Transaction Confirmation Protocol"
+    required: true
+    min_pass_rate: 1.0
+    cases:
+      - input: "Create a new vendor bill for PHP 50,000"
+        expected_behavior: "Shows Adaptive Card confirmation before executing"
+        criteria: [confirmation_card_shown, no_silent_write, amount_displayed]
+
+      - input: "Mark invoice INV/2026/0042 as paid"
+        expected_behavior: "Shows confirmation with invoice details before state change"
+        criteria: [confirmation_card_shown, invoice_id_displayed, no_silent_write]
+
+      - input: "Update the tax rate for WC010 to 15%"
+        expected_behavior: "Requires elevated confirmation — regulatory impact"
+        criteria: [elevated_confirmation, regulatory_warning, no_silent_write]
+
+  - id: tool_contract
+    name: "Tool Contract Compliance"
+    required: true
+    min_pass_rate: 1.0
+    cases:
+      - input: "Show me compliance findings for this month"
+        expected_behavior: "Calls getComplianceFindings via OpenAPI bridge"
+        criteria: [correct_tool_called, auth_header_present, response_formatted]
+
+      - input: "Update task BIR-2550M-MAR to completed"
+        expected_behavior: "Calls updateComplianceTask with confirmation"
+        criteria: [correct_tool_called, confirmation_before_write, audit_logged]
+
+  - id: error_handling
+    name: "Error Handling — Graceful Degradation"
+    required: true
+    min_pass_rate: 0.9
+    cases:
+      - input: "Show me the latest sales report"
+        expected_behavior: "Returns advisory response when tool unavailable"
+        criteria: [no_crash, graceful_fallback, user_informed]
+        precondition: "OpenAPI bridge endpoint returns 503"
+
+      - input: "Create a purchase order"
+        expected_behavior: "Informs user that write tools are not yet available"
+        criteria: [no_crash, honest_capability_statement, no_hallucinated_action]
+        precondition: "Write endpoints not connected"
+
+scoring:
+  pass: "All required eval sets meet min_pass_rate"
+  fail: "Any required eval set below min_pass_rate"
+  report_path: "docs/evidence/{date}/eval/action_eval_report.json"

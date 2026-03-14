@@ -1,0 +1,108 @@
+# Agent Feature Ledger — InsightPulseAI
+# Tracks capability status across all agent surfaces
+# Last updated: 2026-03-15
+
+version: "1.0.0"
+
+features:
+  # --- Foundation (Phase 1) ---
+  - id: cosmos_session_persistence
+    name: "Cosmos DB Session Persistence"
+    status: implemented
+    surface: landing_page
+    evidence: "src/lib/cosmos.ts — graceful fallback to in-memory Map"
+    date_implemented: "2026-03-14"
+
+  - id: application_insights
+    name: "Application Insights Telemetry"
+    status: implemented
+    surface: landing_page
+    evidence: "src/lib/telemetry.ts — no-op stubs when env var absent"
+    date_implemented: "2026-03-14"
+
+  - id: pii_redaction_middleware
+    name: "PII Redaction Middleware"
+    status: implemented
+    surface: landing_page
+    evidence: "src/middleware/pii-redact.ts — PH TIN, bank, email patterns"
+    date_implemented: "2026-03-14"
+
+  - id: managed_identity_auth
+    name: "Managed Identity Authentication"
+    status: implemented
+    surface: landing_page
+    evidence: "server.ts — IMDS token + az CLI fallback"
+    date_implemented: "2026-03-14"
+
+  - id: multi_turn_conversations
+    name: "Multi-Turn Conversations"
+    status: implemented
+    surface: landing_page
+    evidence: "server.ts — thread creation, message append, run polling"
+    date_implemented: "2026-03-14"
+
+  - id: surface_validation
+    name: "Surface Validation"
+    status: implemented
+    surface: landing_page
+    evidence: "server.ts — context.surface === 'landing_page' enforced"
+    date_implemented: "2026-03-14"
+
+  - id: foundry_kb_files
+    name: "Foundry Knowledge Base Files"
+    status: drafted
+    surface: all
+    evidence: "docs/foundry-kb/ — 6 files, 1302 lines"
+    blocker: "Not yet uploaded to Foundry portal"
+
+  - id: agent_instructions_v7
+    name: "Agent Instructions v7"
+    status: drafted
+    surface: all
+    evidence: "docs/foundry-kb/agent-instructions-v7-draft.md — 480 lines"
+    blocker: "Not yet pasted into Foundry portal"
+
+  # --- Knowledge + Tools (Phase 2) ---
+  - id: openapi_bridge
+    name: "OpenAPI Bridge to Odoo"
+    status: spec_drafted
+    surface: all
+    evidence: "apps/bridge-api/ — Azure Functions scaffold, 2 endpoints"
+    blocker: "Not deployed, not connected to Foundry"
+
+  - id: citation_extraction
+    name: "Citation-First Knowledge"
+    status: not_started
+    surface: all
+    blocker: "Requires AI Search index + KB upload"
+
+  - id: bing_grounding
+    name: "Bing Grounding"
+    status: not_started
+    surface: all
+    blocker: "Not enabled in Foundry portal"
+
+  - id: memory
+    name: "Foundry Memory"
+    status: not_started
+    surface: all
+    blocker: "Not enabled in Foundry portal"
+
+  # --- Enterprise Copilot (Phase 3) ---
+  - id: odoo_sidebar_copilot
+    name: "Odoo Sidebar Copilot"
+    status: not_started
+    surface: odoo
+    blocker: "ipai_ai_copilot not migrated to 19.0"
+
+  - id: m365_teams_channel
+    name: "M365 Teams Channel"
+    status: not_started
+    surface: m365
+    blocker: "Requires Copilot Studio or Teams bot"
+
+  - id: distributed_tracing
+    name: "Distributed Tracing"
+    status: not_started
+    surface: all
+    blocker: "Requires Application Insights correlation IDs"
