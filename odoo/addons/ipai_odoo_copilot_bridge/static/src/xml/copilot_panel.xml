@@ -1,0 +1,25 @@
+<templates xml:space="preserve">
+  <t t-name="ipai_odoo_copilot_bridge.Panel">
+    <div class="o_ipai_copilot_panel p-3">
+      <h3>IPAI Odoo Copilot</h3>
+      <div class="mb-3">
+        <textarea class="form-control" rows="3"
+                  t-model="state.prompt"
+                  placeholder="Ask the copilot..."/>
+      </div>
+      <button class="btn btn-primary" t-on-click="onSend"
+              t-att-disabled="state.loading">
+        <t t-if="state.loading">Thinking...</t>
+        <t t-else="">Send</t>
+      </button>
+      <div t-if="state.response" class="mt-3 p-3 border rounded">
+        <t t-if="state.blocked">
+          <div class="text-danger" t-esc="state.response"/>
+        </t>
+        <t t-else="">
+          <div t-esc="state.response"/>
+        </t>
+      </div>
+    </div>
+  </t>
+</templates>
