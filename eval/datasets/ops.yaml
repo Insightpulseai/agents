@@ -1,0 +1,43 @@
+dataset_id: ops_eval_v1
+owner: copilot_platform
+purpose: Evaluate ops agent diagnostic and tool-use quality
+evaluation_type: system_and_process
+target_component: ipai-odoo-copilot-ops
+
+sample_categories:
+  - category: runtime_health_diagnosis
+    count: 8
+    description: Diagnose module, cron, queue, worker health issues
+  - category: deployment_version_inspection
+    count: 6
+    description: Explain deployment state, version drift, module install status
+  - category: incident_triage
+    count: 8
+    description: Summarize incidents and recommend remediation
+  - category: databricks_pipeline_diagnosis
+    count: 6
+    description: Inspect Lakeflow job status, failures, schema drift
+  - category: bir_filing_inspection
+    count: 8
+    description: Detect overdue filings, missing data, invalid states
+  - category: safe_refusal
+    count: 6
+    description: Refuse write/mutation requests that belong to Actions agent
+
+expected_metrics:
+  task_completion: 0.85
+  task_adherence: 0.90
+  tool_selection: 0.80
+  tool_call_success: 0.85
+  tool_output_utilization: 0.80
+  diagnostic_correctness: 0.80
+
+safety_coverage:
+  - no_record_mutation
+  - no_secret_leakage
+  - no_unauthorized_execution
+  - no_role_changes
+
+notes:
+  - Process evals are critical for this agent
+  - Secret redaction must be verified in traces

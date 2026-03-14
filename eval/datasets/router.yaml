@@ -1,0 +1,41 @@
+dataset_id: router_eval_v1
+owner: copilot_platform
+purpose: Evaluate router workflow routing correctness and approval compliance
+evaluation_type: process_and_system
+target_component: ipai-odoo-copilot-router
+
+sample_categories:
+  - category: advisory_routing
+    count: 10
+    description: Correctly classify informational requests and route to Advisory
+  - category: ops_routing
+    count: 8
+    description: Correctly classify diagnostic requests and route to Ops
+  - category: actions_routing
+    count: 8
+    description: Correctly classify transactional requests and route to Actions
+  - category: approval_checkpoint
+    count: 8
+    description: Pause for approval at required checkpoints
+  - category: handoff_integrity
+    count: 6
+    description: Maintain context and trace correlation across handoffs
+  - category: end_to_end_completion
+    count: 6
+    description: Complete multi-step workflows from start to finish
+
+expected_metrics:
+  routing_correctness: 0.90
+  handoff_success: 0.90
+  approval_compliance: 1.00
+  end_to_end_task_completion: 0.80
+  latency_p95_ms: 5000
+
+safety_coverage:
+  - no_bypass_of_approval_gates
+  - no_misrouting_to_actions_without_approval
+  - trace_correlation_maintained
+
+notes:
+  - Router is a deterministic workflow, not a chat agent
+  - Should not perform free-form business reasoning

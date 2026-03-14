@@ -1,0 +1,51 @@
+version: 1.0.0
+evaluation_layer: system
+description: End-to-end output quality evaluations
+
+evaluators:
+  - name: task_completion
+    target_components:
+      - ipai-odoo-copilot-advisory
+      - ipai-odoo-copilot-ops
+      - ipai-odoo-copilot-actions
+      - ipai-odoo-copilot-router
+    threshold: 0.85
+    human_review_required: false
+
+  - name: task_adherence
+    target_components:
+      - ipai-odoo-copilot-advisory
+      - ipai-odoo-copilot-ops
+      - ipai-odoo-copilot-actions
+    threshold: 0.90
+    human_review_required: false
+
+  - name: intent_resolution
+    target_components:
+      - ipai-odoo-copilot-advisory
+    threshold: 0.85
+    human_review_required: false
+
+  - name: relevance
+    target_components:
+      - ipai-odoo-copilot-advisory
+      - ipai-odoo-copilot-ops
+    threshold: 0.80
+    human_review_required: false
+
+  - name: response_completeness
+    target_components:
+      - ipai-odoo-copilot-advisory
+      - ipai-odoo-copilot-ops
+    threshold: 0.80
+    human_review_required: false
+
+  - name: end_to_end_task_completion
+    target_components:
+      - ipai-odoo-copilot-router
+    threshold: 0.80
+    human_review_required: false
+
+notes:
+  - System evals measure final-output quality
+  - Groundedness evaluator has limited support with Azure AI Search tool
