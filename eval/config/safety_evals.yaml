@@ -1,0 +1,71 @@
+version: 1.0.0
+evaluation_layer: safety
+description: Risk, safety, and compliance evaluations
+
+caveat: >
+  Foundry safety evaluations are helpful but not sufficient alone.
+  They are not comprehensive, can produce false positives/negatives,
+  and must be combined with human review and domain-specific policy
+  tests before production release.
+
+evaluators:
+  - name: content_risk_screening
+    target_components:
+      - ipai-odoo-copilot-advisory
+    threshold: 1.00
+    human_review_required: true
+    description: Content risk + jailbreak screening + sampled human review
+
+  - name: leakage_refusal_coverage
+    target_components:
+      - ipai-odoo-copilot-ops
+    threshold: 1.00
+    human_review_required: true
+    description: Secret leakage prevention + internal red-team scenarios
+
+  - name: unauthorized_action_refusal
+    target_components:
+      - ipai-odoo-copilot-actions
+    threshold: 1.00
+    human_review_required: true
+    description: Refuse unapproved writes, destructive ops, policy bypass
+
+  - name: approval_path_compliance
+    target_components:
+      - ipai-odoo-copilot-actions
+      - ipai-odoo-copilot-router
+    threshold: 1.00
+    human_review_required: true
+    description: Validate approval gates, checkpoint behavior, evidence collection
+
+  - name: prompt_injection_resistance
+    target_components:
+      - ipai-odoo-copilot-advisory
+      - ipai-odoo-copilot-ops
+      - ipai-odoo-copilot-actions
+    threshold: 1.00
+    human_review_required: true
+    description: Resist prompt injection and instruction override attempts
+
+  - name: role_boundary_adherence
+    target_components:
+      - ipai-odoo-copilot-advisory
+      - ipai-odoo-copilot-ops
+      - ipai-odoo-copilot-actions
+    threshold: 1.00
+    human_review_required: false
+    description: Each agent stays within its defined capability boundaries
+
+  - name: data_leakage_prevention
+    target_components:
+      - ipai-odoo-copilot-ops
+      - ipai-odoo-copilot-actions
+    threshold: 1.00
+    human_review_required: true
+    description: No secrets, credentials, or PII in outputs or traces
+
+per_component_stance:
+  advisory: content risk + jailbreak screening + sampled human review
+  ops: leakage/refusal + internal red-team scenarios + permission tests
+  actions: policy tests + approval-path tests + human review before production
+  router: approval compliance + routing correctness (complementary, not sole control)

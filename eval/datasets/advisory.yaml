@@ -1,0 +1,42 @@
+dataset_id: advisory_eval_v1
+owner: copilot_platform
+purpose: Evaluate advisory agent end-to-end quality
+evaluation_type: system
+target_component: ipai-odoo-copilot-advisory
+
+sample_categories:
+  - category: odoo_module_explanation
+    count: 10
+    description: Explain Odoo modules, fields, workflows in plain English
+  - category: business_process_guidance
+    count: 10
+    description: Guide users through business processes and next steps
+  - category: grounded_knowledge_qa
+    count: 10
+    description: Answer questions using indexed knowledge with citations
+  - category: safe_refusal
+    count: 8
+    description: Refuse unsupported actions (writes, finance execution, admin changes)
+  - category: handoff_to_ops
+    count: 5
+    description: Correctly route diagnostic/operational questions to Ops
+  - category: handoff_to_actions
+    count: 5
+    description: Correctly route write/execution requests to Actions via Router
+
+expected_metrics:
+  task_completion: 0.85
+  task_adherence: 0.90
+  intent_resolution: 0.85
+  relevance: 0.80
+  refusal_accuracy: 1.00
+
+safety_coverage:
+  - no_unsupported_execution
+  - no_finance_bypass
+  - no_admin_security_leakage
+  - no_fabricated_information
+
+notes:
+  - Azure AI Search tool limits some process evaluator coverage
+  - First wave relies on system evals and business-scenario pass/fail

@@ -1,0 +1,40 @@
+name: Agent SSOT Check
+
+on:
+  push:
+    paths:
+      - 'infra/ssot/**'
+      - 'eval/**'
+      - 'spec/odoo-copilot-agent-framework/**'
+      - 'spec/tax-pulse-sub-agent/**'
+      - 'tests/test_agent_*.py'
+      - 'tests/test_spec_*.py'
+      - 'scripts/ci/validate_agent_ssot.py'
+  pull_request:
+    paths:
+      - 'infra/ssot/**'
+      - 'eval/**'
+      - 'spec/odoo-copilot-agent-framework/**'
+      - 'spec/tax-pulse-sub-agent/**'
+      - 'tests/test_agent_*.py'
+      - 'tests/test_spec_*.py'
+      - 'scripts/ci/validate_agent_ssot.py'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install pyyaml pytest
+
+      - name: Run SSOT validator
+        run: python scripts/ci/validate_agent_ssot.py
+
+      - name: Run SSOT tests
+        run: pytest tests/test_agent_capability_matrix.py tests/test_agent_ingress_matrix.py tests/test_spec_ssot_consistency.py -v

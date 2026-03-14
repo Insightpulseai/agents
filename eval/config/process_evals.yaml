@@ -1,0 +1,65 @@
+version: 1.0.0
+evaluation_layer: process
+description: Tool and workflow quality evaluations
+
+evaluators:
+  - name: tool_selection
+    target_components:
+      - ipai-odoo-copilot-ops
+      - ipai-odoo-copilot-actions
+    threshold: 0.80
+    human_review_required: false
+    notes: Limited support when conversation includes Azure AI Search
+
+  - name: tool_call_success
+    target_components:
+      - ipai-odoo-copilot-ops
+      - ipai-odoo-copilot-actions
+    threshold: 0.85
+    human_review_required: false
+    notes: Limited support when conversation includes Azure AI Search
+
+  - name: tool_output_utilization
+    target_components:
+      - ipai-odoo-copilot-ops
+    threshold: 0.80
+    human_review_required: false
+    notes: Limited support when conversation includes Azure AI Search
+
+  - name: tool_input_accuracy
+    target_components:
+      - ipai-odoo-copilot-actions
+    threshold: 0.90
+    human_review_required: false
+    notes: Limited support when conversation includes Azure AI Search
+
+  - name: routing_correctness
+    target_components:
+      - ipai-odoo-copilot-router
+    threshold: 0.90
+    human_review_required: false
+
+  - name: handoff_success
+    target_components:
+      - ipai-odoo-copilot-router
+    threshold: 0.90
+    human_review_required: false
+
+  - name: approval_compliance
+    target_components:
+      - ipai-odoo-copilot-actions
+      - ipai-odoo-copilot-router
+    threshold: 1.00
+    human_review_required: true
+
+  - name: task_navigation_efficiency
+    target_components:
+      - ipai-odoo-copilot-router
+    threshold: 0.75
+    human_review_required: false
+    notes: Only applicable where ground-truth workflow paths exist
+
+notes:
+  - Several tool-centric evaluators have limited support with Azure AI Search
+  - First wave should rely more on system evals and business-scenario tests
+  - Approval compliance requires human review before production

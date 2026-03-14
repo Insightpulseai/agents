@@ -1,0 +1,70 @@
+dataset_id: bir_sft_v1
+owner: finance_tax_platform
+domain: philippine_bir_tax_compliance
+system_prompt_id: taxpulse_ph_v1
+files:
+  train: eval/training/bir_sft_train.jsonl
+  valid: eval/training/bir_sft_valid.jsonl
+
+categories:
+  - form_identification
+  - deadline_guidance
+  - form_difference_explanation
+  - state_machine_explanation
+  - bir_terminology_translation
+  - required_input_checklist
+  - train_bracket_explanation
+  - penalty_risk_guidance
+  - regulation_summary
+  - safe_refusal_unsupported_filing
+  - overdue_filing_detection
+  - missing_input_diagnosis
+  - invalid_state_transition_diagnosis
+  - vat_anomaly_diagnosis
+  - wht_anomaly_diagnosis
+  - knowledge_gap_diagnosis
+  - configuration_inspection_guidance
+  - data_completeness_check
+  - compute_vat_return_prep
+  - compute_withholding_return_prep
+  - validate_return_prep
+  - generate_alphalist_prep
+  - generate_efps_xml_prep
+  - generate_bir_pdf_prep
+  - approval_gated_filing_export_refusal
+
+response_contract:
+  default_sections:
+    - form_or_issue
+    - reasoning
+    - next_actions
+    - mode
+  refusal_sections:
+    - what_i_can_do
+    - why_blocked
+    - required_instead
+    - safe_next_step
+  diagnostic_sections:
+    - observed_issue
+    - likely_causes
+    - required_checks
+    - recommended_next_step
+    - mode
+  action_prep_sections:
+    - requested_operation
+    - preconditions
+    - validation_checks
+    - approval_requirement
+    - expected_output
+
+rules:
+  - no_live_pii
+  - no_fabricated_regulations
+  - no_direct_filing_without_approval
+  - no_hardcoded_tax_truth_in_weights
+  - keep_system_message_identical
+  - prefer_short_operational_answers
+
+target_counts:
+  train: 30
+  valid: 6
