@@ -1,0 +1,7 @@
+tools:
+  - name: srchipaidev8tlstu
+    type: azure_ai_search
+    owner_repo: infra
+    referenced_from:
+      - agents/foundry/agents/ipai-odoo-copilot-azure/agent.manifest.yaml
+    logical_purpose: knowledge_grounding

@@ -1,0 +1,65 @@
+repos:
+  - name: odoo
+    purpose: erp_runtime
+    owns:
+      - odoo_runtime
+      - addons
+      - migrations
+      - odoo_ai_bridge
+    must_not_own:
+      - apim_gateway
+      - frontdoor_iac
+      - databricks_pipelines
+      - org_secret_policy
+
+  - name: agents
+    purpose: agent_definitions
+    owns:
+      - agent_manifests
+      - prompts
+      - workflows
+      - eval_specs
+      - knowledge_markdown
+    must_not_own:
+      - databricks_iac
+      - odoo_business_logic
+      - global_secret_policy
+
+  - name: ops-platform
+    purpose: control_plane_ssot
+    owns:
+      - policy_docs
+      - secret_inventory
+      - foundry_inventory
+      - azdo_inventory
+      - platform_alignment
+    must_not_own:
+      - workload_runtime_code
+
+  - name: infra
+    purpose: infrastructure_as_code
+    owns:
+      - azure_iac
+      - cloudflare_iac
+      - identity_wiring
+      - apim
+      - frontdoor
+      - databricks_workspace_iac
+      - search_iac
+    must_not_own:
+      - prompts
+      - medallion_business_logic
+
+  - name: lakehouse
+    purpose: databricks_data_intelligence
+    owns:
+      - notebooks
+      - jobs
+      - pipelines
+      - sql
+      - medallion_models
+      - curated_ai_contracts
+    must_not_own:
+      - prompt_agents
+      - guardrail_policy
+      - odoo_runtime
