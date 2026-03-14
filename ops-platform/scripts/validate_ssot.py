@@ -16,6 +16,8 @@ REQUIRED_FILES = [
     ROOT / "ssot/foundry/project-inventory.yaml",
     ROOT / "ssot/foundry/model-deployments.yaml",
     ROOT / "ssot/foundry/tools.yaml",
+    ROOT / "ssot/foundry/guardrails.yaml",
+    ROOT / "ssot/foundry/knowledge-assets.yaml",
 ]
 
 
@@ -70,6 +72,32 @@ def validate_foundry_inventory(
     return errors
 
 
+def validate_guardrails(projects: dict, guardrails: dict) -> list[str]:
+    errors: list[str] = []
+    known_guardrails = {g["name"] for g in guardrails.get("guardrails", [])}
+
+    for proj in projects.get("foundry_projects", []):
+        for gr_name in proj.get("guardrails", []):
+            if gr_name not in known_guardrails:
+                errors.append(
+                    f"unknown guardrail referenced by project: {gr_name}"
+                )
+
+    return errors
+
+
+def validate_knowledge_assets(knowledge: dict) -> list[str]:
+    errors: list[str] = []
+    for asset in knowledge.get("knowledge_assets", []):
+        if not asset.get("name"):
+            errors.append("knowledge asset missing name")
+        if not asset.get("source_path"):
+            errors.append(
+                f"knowledge asset '{asset.get('name', '?')}' missing source_path"
+            )
+    return errors
+
+
 def main() -> int:
     errors = validate_required_files()
     if errors:
@@ -80,9 +108,13 @@ def main() -> int:
     projects = load_yaml(ROOT / "ssot/foundry/project-inventory.yaml")
     models = load_yaml(ROOT / "ssot/foundry/model-deployments.yaml")
     tools = load_yaml(ROOT / "ssot/foundry/tools.yaml")
+    guardrails = load_yaml(ROOT / "ssot/foundry/guardrails.yaml")
+    knowledge = load_yaml(ROOT / "ssot/foundry/knowledge-assets.yaml")
 
     errors.extend(validate_repo_ownership(repo_ownership))
     errors.extend(validate_foundry_inventory(projects, models, tools))
+    errors.extend(validate_guardrails(projects, guardrails))
+    errors.extend(validate_knowledge_assets(knowledge))
 
     if errors:
         print("\n".join(errors))

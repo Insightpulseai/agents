@@ -89,3 +89,35 @@ def test_foundry_project_references_valid_tools():
     for proj in projects.get("foundry_projects", []):
         for tool in proj.get("tools", []):
             assert tool in known, f"unknown tool: {tool}"
+
+
+def test_foundry_project_references_valid_guardrails():
+    """Every guardrail referenced by a Foundry project must exist in guardrails.yaml."""
+    projects = load_yaml(ROOT / "ssot/foundry/project-inventory.yaml")
+    guardrails = load_yaml(ROOT / "ssot/foundry/guardrails.yaml")
+
+    known = {g["name"] for g in guardrails.get("guardrails", [])}
+    for proj in projects.get("foundry_projects", []):
+        for gr in proj.get("guardrails", []):
+            assert gr in known, f"unknown guardrail: {gr}"
+
+
+def test_knowledge_assets_have_source_paths():
+    """Every knowledge asset must declare a source_path."""
+    knowledge = load_yaml(ROOT / "ssot/foundry/knowledge-assets.yaml")
+    for asset in knowledge.get("knowledge_assets", []):
+        assert asset.get("source_path"), f"knowledge asset '{asset.get('name')}' missing source_path"
+
+
+def test_knowledge_assets_reference_valid_agents():
+    """Every agent referenced by a knowledge asset must exist in project inventory."""
+    projects = load_yaml(ROOT / "ssot/foundry/project-inventory.yaml")
+    knowledge = load_yaml(ROOT / "ssot/foundry/knowledge-assets.yaml")
+
+    known_agents = set()
+    for proj in projects.get("foundry_projects", []):
+        known_agents.update(proj.get("agents", []))
+
+    for asset in knowledge.get("knowledge_assets", []):
+        for agent in asset.get("consumed_by_agents", []):
+            assert agent in known_agents, f"unknown agent in knowledge asset: {agent}"

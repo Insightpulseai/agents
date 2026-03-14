@@ -1,0 +1,14 @@
+knowledge_assets:
+  - name: ipai-odoo-knowledge-base
+    source_path: agents/foundry/knowledge/ipai-odoo-knowledge-base.md
+    owner_repo: agents
+    consumed_by_agents:
+      - ipai-odoo-copilot-azure
+    content_type: odoo_docs_sops_runbooks
+
+  - name: ipai-knowledge
+    source_path: agents/foundry/knowledge/ipai-knowledge.md
+    owner_repo: agents
+    consumed_by_agents:
+      - ipai-odoo-copilot-azure
+    content_type: platform_knowledge
