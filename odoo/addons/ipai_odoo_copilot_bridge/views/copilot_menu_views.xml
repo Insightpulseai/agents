@@ -1,0 +1,15 @@
+<odoo>
+  <record id="action_ipai_copilot_audit" model="ir.actions.act_window">
+    <field name="name">Copilot Audit</field>
+    <field name="res_model">ipai.copilot.audit</field>
+    <field name="view_mode">list,form</field>
+  </record>
+
+  <menuitem id="menu_ipai_copilot_root"
+            name="IPAI Copilot"
+            parent="base.menu_custom"/>
+  <menuitem id="menu_ipai_copilot_audit"
+            name="Audit Log"
+            parent="menu_ipai_copilot_root"
+            action="action_ipai_copilot_audit"/>
+</odoo>

@@ -1,0 +1,25 @@
+name: ipai-odoo-copilot-azure
+runtime_type: foundry_prompt_agent
+publish_target: agent_application
+consumption_protocol: responses_api
+default_environment_mode: PROD-ADVISORY
+
+capabilities:
+  - informational
+  - navigational
+  - transactional
+  - compliance_intelligence
+
+allowed_consumers:
+  - ops-platform
+  - odoo_bridge
+  - web_backend
+
+forbidden_consumers:
+  - public_browser_direct
+  - unaudited_write_clients
+
+write_policy:
+  confirmation_required: true
+  audit_required: true
+  backend_mediated_only: true
