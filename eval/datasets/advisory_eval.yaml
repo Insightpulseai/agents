@@ -1,0 +1,56 @@
+# Advisory Eval Dataset — InsightPulseAI
+# Tests informational/advisory mode across surfaces
+# Last updated: 2026-03-15
+
+version: "1.0.0"
+dataset_id: advisory_eval
+category: informational
+surface: landing_page
+min_pass_rate: 1.0
+
+cases:
+  - id: advisory_001
+    input: "What BIR forms are due in March 2026?"
+    expected_behavior: "Returns BIR filing calendar entries for March with form numbers and deadlines"
+    criteria:
+      - non_empty
+      - source_label_present
+      - source_is_bir_calendar
+      - no_fabricated_deadlines
+      - factually_accurate
+
+  - id: advisory_002
+    input: "What modules does the InsightPulseAI platform include?"
+    expected_behavior: "Lists actual ipai_* modules from the module catalog without fabricating names"
+    criteria:
+      - non_empty
+      - source_label_present
+      - no_phantom_modules
+      - module_names_match_catalog
+
+  - id: advisory_003
+    input: "How do I navigate to Vendor Bills in Odoo?"
+    expected_behavior: "Returns the correct Odoo menu path: Accounting > Vendors > Bills"
+    criteria:
+      - non_empty
+      - correct_menu_path
+      - source_label_present
+      - no_fabricated_path
+
+  - id: advisory_004
+    input: "What is the ATC withholding tax code for professional fees in the Philippines?"
+    expected_behavior: "Returns WC010 (or equivalent) with citation from BIR calendar or IPAI KB"
+    criteria:
+      - non_empty
+      - source_label_present
+      - atc_code_correct
+      - factually_accurate
+
+  - id: advisory_005
+    input: "What is InsightPulseAI and what does it do?"
+    expected_behavior: "Returns coherent company description sourced from IPAI KB"
+    criteria:
+      - non_empty
+      - source_label_present
+      - no_hallucination
+      - under_500_tokens

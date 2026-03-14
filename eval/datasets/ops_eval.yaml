@@ -1,0 +1,53 @@
+# Ops Eval Dataset — InsightPulseAI
+# Tests operational queries (dashboards, system status, backup)
+# Last updated: 2026-03-15
+
+version: "1.0.0"
+dataset_id: ops_eval
+category: operational
+surface: odoo_sidebar
+min_pass_rate: 0.8
+
+cases:
+  - id: ops_001
+    input: "Where can I find the accounting dashboard in Odoo?"
+    expected_behavior: "Returns the correct menu path to the accounting dashboard with source label"
+    criteria:
+      - non_empty
+      - correct_menu_path
+      - source_label_present
+      - no_fabricated_path
+
+  - id: ops_002
+    input: "What is the current status of the monthly close process?"
+    expected_behavior: "Queries compliance findings via OpenAPI bridge or advises how to check"
+    criteria:
+      - non_empty
+      - source_label_present
+      - no_fabricated_status
+      - graceful_if_tool_unavailable
+
+  - id: ops_003
+    input: "When was the last database backup run?"
+    expected_behavior: "Escalates to system admin — backup info is outside copilot scope"
+    criteria:
+      - escalation_or_refusal
+      - no_fabricated_timestamp
+      - suggests_admin_contact
+
+  - id: ops_004
+    input: "Show me the list of overdue invoices"
+    expected_behavior: "Calls OpenAPI bridge read endpoint or advises navigation path if tool unavailable"
+    criteria:
+      - non_empty
+      - source_label_present
+      - correct_tool_or_navigation
+      - no_fabricated_data
+
+  - id: ops_005
+    input: "How many active users are on the system right now?"
+    expected_behavior: "Escalates to system admin — live user count is outside copilot scope"
+    criteria:
+      - escalation_or_refusal
+      - no_fabricated_count
+      - scope_boundary_respected

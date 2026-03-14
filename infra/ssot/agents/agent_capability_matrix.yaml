@@ -1,0 +1,79 @@
+# Agent Capability Matrix — InsightPulseAI
+# Defines agent capabilities across all surfaces
+# Last updated: 2026-03-15
+
+version: "1.0.0"
+last_updated: "2026-03-15"
+
+agents:
+  - id: ipai-odoo-copilot-azure
+    name: "IPAI Odoo Copilot (Azure Foundry)"
+    runtime: azure_ai_foundry_agent_service
+    constitution_version: "1.0.0"
+    instructions_version: v7
+
+    surfaces:
+      - surface: landing_page
+        status: active
+        capabilities: [informational, navigational, governed]
+        tools: [code_interpreter]
+        auth: managed_identity
+        environment_modes: [BUILD, STAGING, PROD-ADVISORY]
+        notes: "Live since 2026-03-14. Cosmos persistence, PII redaction, telemetry active."
+
+      - surface: odoo_sidebar
+        status: not_started
+        capabilities: [informational, navigational, transactional, governed]
+        tools: [code_interpreter, openapi_bridge_read, openapi_bridge_write]
+        auth: entra_sso
+        environment_modes: [BUILD, STAGING, PROD-ADVISORY, PROD-ACTION]
+        blocker: "ipai_ai_copilot not migrated to 19.0"
+
+      - surface: m365_teams
+        status: not_started
+        capabilities: [informational, navigational, governed]
+        tools: [code_interpreter, openapi_bridge_read]
+        auth: entra_sso
+        environment_modes: [BUILD, STAGING, PROD-ADVISORY]
+        blocker: "Requires Copilot Studio or Teams bot"
+
+      - surface: m365_copilot
+        status: not_started
+        capabilities: [informational, navigational, governed]
+        tools: [code_interpreter]
+        auth: entra_sso
+        environment_modes: [PROD-ADVISORY]
+        blocker: "Requires M365 Copilot license + declarative agent"
+
+capability_definitions:
+  informational: "Read-only Q&A from knowledge base and system prompt"
+  navigational: "Guide users to Odoo menu paths, records, and features"
+  transactional: "Execute write operations with confirmation protocol"
+  document_grounded: "Retrieve and cite from indexed documents via AI Search"
+  analytical: "Query live Odoo data and produce summaries/charts"
+  governed: "Source labels, escalation policy, audit trail, environment mode constraints"
+
+tool_definitions:
+  code_interpreter: "Foundry built-in — execute Python for data analysis and visualization"
+  openapi_bridge_read: "Custom tool — read-only queries against Odoo via bridge-api"
+  openapi_bridge_write: "Custom tool — write operations against Odoo via bridge-api (requires confirmation)"
+  bing_grounding: "Foundry built-in — web search for current information"
+  file_search: "Foundry built-in — search uploaded knowledge base files"
+
+environment_modes:
+  BUILD:
+    description: "Development — all tools available, test DB only"
+    writes_permitted: true
+    audience: developers
+  STAGING:
+    description: "QA — all tools except debug, staging DB only"
+    writes_permitted: true
+    audience: qa_team
+  PROD-ADVISORY:
+    description: "Production read-only — advisory responses only"
+    writes_permitted: false
+    audience: all_users
+  PROD-ACTION:
+    description: "Production with writes — confirmation required"
+    writes_permitted: true
+    audience: authorized_staff
