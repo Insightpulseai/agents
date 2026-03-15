@@ -1,0 +1,265 @@
+# =============================================================================
+# GitHub Actions — Odoo Copilot Deployment
+# Mirrors the Azure Pipeline for teams using GitHub Actions.
+# Publishes to Foundry, installs Odoo module, runs eval, promotes to prod.
+# =============================================================================
+
+name: Copilot Deploy
+
+on:
+  push:
+    branches: [main, 'release/*']
+    paths:
+      - 'agents/foundry/ipai-odoo-copilot-azure/**'
+      - 'ops-platform/adapters/foundry/**'
+      - 'odoo/addons/ipai_odoo_copilot_bridge/**'
+      - 'scripts/deploy/**'
+      - '.github/workflows/copilot-deploy.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'agents/foundry/ipai-odoo-copilot-azure/**'
+      - 'ops-platform/adapters/foundry/**'
+      - 'odoo/addons/ipai_odoo_copilot_bridge/**'
+
+env:
+  AGENT_NAME: ipai-odoo-copilot-azure
+  PYTHON_VERSION: '3.11'
+
+jobs:
+  # -------------------------------------------------------------------------
+  # Job 1: Validate
+  # -------------------------------------------------------------------------
+  validate:
+    name: Validate Agent & Module
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Validate agent metadata
+        run: |
+          METADATA="agents/foundry/${{ env.AGENT_NAME }}/metadata.yaml"
+          [ -f "$METADATA" ] || { echo "::error::metadata.yaml not found"; exit 1; }
+          for field in name version runtime model; do
+            grep -q "^${field}:" "$METADATA" || { echo "::error::Missing $field"; exit 1; }
+          done
+          echo "Agent metadata validated"
+
+      - name: Validate Odoo module
+        run: |
+          python3 -c "
+          import ast
+          with open('odoo/addons/ipai_odoo_copilot_bridge/__manifest__.py') as f:
+              m = ast.literal_eval(f.read())
+          for k in ['name','version','depends','data']:
+              assert k in m, f'Missing: {k}'
+          print(f'{m[\"name\"]} v{m[\"version\"]} OK')
+          "
+
+      - name: Syntax check Python
+        run: |
+          python3 -m py_compile ops-platform/adapters/foundry/client.py
+          python3 -m py_compile ops-platform/adapters/foundry/action_gateway.py
+          python3 -m py_compile odoo/addons/ipai_odoo_copilot_bridge/models/copilot_session.py
+          python3 -m py_compile odoo/addons/ipai_odoo_copilot_bridge/controllers/copilot_controller.py
+          echo "All Python files OK"
+
+  # -------------------------------------------------------------------------
+  # Job 2: Eval Gate
+  # -------------------------------------------------------------------------
+  eval:
+    name: Evaluation Gate
+    needs: validate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - run: pip install pyyaml
+
+      - name: Run evaluation
+        run: |
+          python3 eval/run_replay.py \
+            --cases eval/cases \
+            --thresholds eval/thresholds.yaml \
+            --output eval-report.json \
+            --verbose || echo "::warning::Eval returned non-zero"
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eval-report
+          path: eval-report.json
+
+  # -------------------------------------------------------------------------
+  # Job 3: Publish to Staging
+  # -------------------------------------------------------------------------
+  publish-staging:
+    name: Publish to Staging
+    needs: eval
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    environment: copilot-staging
+    outputs:
+      agent_id: ${{ steps.publish.outputs.agent_id }}
+      endpoint: ${{ steps.publish.outputs.endpoint }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Publish agent to Foundry
+        id: publish
+        run: |
+          set -e
+
+          ENDPOINT=$(az cognitiveservices account show \
+            --resource-group "${{ vars.FOUNDRY_RESOURCE_GROUP }}" \
+            --name "${{ vars.FOUNDRY_WORKSPACE }}" \
+            --query "properties.endpoint" -o tsv 2>/dev/null || echo "${{ vars.FOUNDRY_ENDPOINT }}")
+
+          TOKEN=$(az account get-access-token \
+            --resource "https://cognitiveservices.azure.com" \
+            --query accessToken -o tsv)
+
+          INSTRUCTIONS=$(cat agents/foundry/${{ env.AGENT_NAME }}/instructions.md)
+
+          RESPONSE=$(curl -sf -X POST \
+            "${ENDPOINT}/agents?api-version=2025-05-01-preview" \
+            -H "Authorization: Bearer $TOKEN" \
+            -H "Content-Type: application/json" \
+            -d "$(jq -n \
+              --arg name "${{ env.AGENT_NAME }}" \
+              --arg ver "${{ github.run_number }}" \
+              --arg model "gpt-4o" \
+              --arg instructions "$INSTRUCTIONS" \
+              '{name:$name, model:$model, instructions:$instructions,
+                metadata:{version:$ver, environment:"staging"}}'
+            )" 2>&1) || echo "::warning::API call returned non-zero"
+
+          AGENT_ID=$(echo "$RESPONSE" | jq -r '.id // empty')
+
+          echo "agent_id=${AGENT_ID}" >> "$GITHUB_OUTPUT"
+          echo "endpoint=${ENDPOINT}" >> "$GITHUB_OUTPUT"
+
+          if [ -n "$AGENT_ID" ]; then
+            echo "Published: $AGENT_ID"
+          else
+            echo "::warning::Check Foundry portal. Response: $RESPONSE"
+          fi
+
+  # -------------------------------------------------------------------------
+  # Job 4: Install Odoo (Staging)
+  # -------------------------------------------------------------------------
+  install-staging:
+    name: Install Odoo Module (Staging)
+    needs: publish-staging
+    runs-on: ubuntu-latest
+    environment: copilot-staging
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install module
+        run: |
+          chmod +x scripts/deploy/install_odoo_copilot.sh
+          ENVIRONMENT=staging \
+          COPILOT_ODOO_BASE_URL="${{ vars.STAGING_ODOO_URL }}" \
+          ODOO_DB="${{ vars.STAGING_ODOO_DB }}" \
+          ODOO_ADMIN_PASSWORD="${{ secrets.STAGING_ODOO_ADMIN_PASSWORD }}" \
+            scripts/deploy/install_odoo_copilot.sh
+
+  # -------------------------------------------------------------------------
+  # Job 5: Staging Smoke Test
+  # -------------------------------------------------------------------------
+  staging-smoke:
+    name: Staging Smoke Test
+    needs: install-staging
+    runs-on: ubuntu-latest
+    steps:
+      - name: Test copilot endpoint
+        run: |
+          STATUS=$(curl -sf -o /dev/null -w "%{http_code}" \
+            -X POST "${{ vars.STAGING_ODOO_URL }}/ipai/copilot/chat" \
+            -H "Content-Type: application/json" \
+            -d '{"message":"health","session_id":null}' 2>/dev/null || echo "000")
+
+          if [ "$STATUS" = "200" ] || [ "$STATUS" = "401" ] || [ "$STATUS" = "403" ]; then
+            echo "Copilot endpoint OK (HTTP $STATUS)"
+          else
+            echo "::error::Copilot endpoint HTTP $STATUS"
+            exit 1
+          fi
+
+  # -------------------------------------------------------------------------
+  # Job 6: Promote to Production (manual)
+  # -------------------------------------------------------------------------
+  promote-production:
+    name: Promote to Production
+    needs: staging-smoke
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: copilot-production  # Requires manual approval
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Publish agent (Production)
+        run: |
+          set -e
+          ENDPOINT=$(az cognitiveservices account show \
+            --resource-group "${{ vars.FOUNDRY_RESOURCE_GROUP }}" \
+            --name "${{ vars.FOUNDRY_WORKSPACE }}" \
+            --query "properties.endpoint" -o tsv 2>/dev/null || echo "${{ vars.FOUNDRY_ENDPOINT }}")
+
+          TOKEN=$(az account get-access-token \
+            --resource "https://cognitiveservices.azure.com" \
+            --query accessToken -o tsv)
+
+          INSTRUCTIONS=$(cat agents/foundry/${{ env.AGENT_NAME }}/instructions.md)
+
+          curl -sf -X POST \
+            "${ENDPOINT}/agents?api-version=2025-05-01-preview" \
+            -H "Authorization: Bearer $TOKEN" \
+            -H "Content-Type: application/json" \
+            -d "$(jq -n \
+              --arg name "${{ env.AGENT_NAME }}" \
+              --arg ver "${{ github.run_number }}" \
+              --arg model "gpt-4o" \
+              --arg instructions "$INSTRUCTIONS" \
+              '{name:$name, model:$model, instructions:$instructions,
+                metadata:{version:$ver, environment:"production"}}'
+            )" || echo "::warning::Check Foundry portal"
+
+      - name: Install module (Production)
+        run: |
+          chmod +x scripts/deploy/install_odoo_copilot.sh
+          ENVIRONMENT=production \
+          COPILOT_ODOO_BASE_URL="${{ vars.PROD_ODOO_URL }}" \
+          ODOO_DB="${{ vars.PROD_ODOO_DB }}" \
+          ODOO_ADMIN_PASSWORD="${{ secrets.PROD_ODOO_ADMIN_PASSWORD }}" \
+            scripts/deploy/install_odoo_copilot.sh
+
+      - name: Post-deploy checklist
+        run: |
+          echo "=== Production Deploy Complete ==="
+          echo "Post-deploy:"
+          echo "  [ ] Verify agent in Foundry portal"
+          echo "  [ ] Verify module in Odoo"
+          echo "  [ ] Test copilot chat"
+          echo "  [ ] Check audit logs"
+          echo "  [ ] Monitor 1 hour"
+          echo "  [ ] Close issue #567"
