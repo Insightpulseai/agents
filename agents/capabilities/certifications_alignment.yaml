@@ -1,0 +1,468 @@
+# =============================================================================
+# MICROSOFT CERTIFICATIONS ALIGNMENT
+# =============================================================================
+# Maps Microsoft certifications (March 2026 poster) to InsightPulseAI agent
+# framework capabilities and team skill requirements.
+#
+# Source: aka.ms/CertificationsPoster (LAST UPDATED MARCH 2026)
+# =============================================================================
+
+version: 1
+meta:
+  source: "aka.ms/ExploreCredentials"
+  updated: "2026-03-15"
+  poster_date: "March 2026"
+
+# =============================================================================
+# CLOUD & AI PLATFORMS
+# =============================================================================
+
+cloud_ai_platforms:
+
+  # --- Fundamentals ---
+  fundamentals:
+    - id: AZ-900
+      name: "Azure Fundamentals"
+      tier: Fundamentals
+      role: "All team members"
+      relevance: core
+      maps_to:
+        - azure_ai.foundry.intro_ai_azure
+        - azure_ai.foundry.plan_develop
+      notes: "Baseline Azure knowledge for entire team"
+
+    - id: AI-900
+      name: "Azure AI Fundamentals"
+      tier: Fundamentals
+      role: "AI Engineer"
+      relevance: core
+      maps_to:
+        - azure_ai.foundry.ai_concepts
+        - azure_ai.foundry.intro_ai_azure
+      notes: "AI service fundamentals — required for agent developers"
+
+    - id: DP-900
+      name: "Azure Data Fundamentals"
+      tier: Fundamentals
+      role: "Data Engineer"
+      relevance: supporting
+      maps_to: []
+      notes: "Data platform baseline for lakehouse integration"
+
+  # --- Role-Based (Associate) ---
+  role_based_associate:
+    - id: AI-102
+      name: "Azure AI Engineer Associate"
+      tier: Role-Based
+      role: "AI Engineer"
+      relevance: critical
+      maps_to:
+        - azure_ai.language.text_analysis_agent
+        - azure_ai.speech.speech_agent
+        - azure_ai.vision.computer_vision_solutions
+        - azure_ai.document.intelligence
+        - azure_ai.search.knowledge_mining
+      notes: "Core certification — covers all AI services used by agent framework"
+
+    - id: AZ-204
+      name: "Azure Developer Associate"
+      tier: Role-Based
+      role: "Developer"
+      relevance: critical
+      maps_to:
+        - azure_ai.foundry.cloud_native_apps
+        - azure_ai.foundry.ai_apps_agents
+      notes: "Azure app development — required for Foundry integration code"
+
+    - id: AZ-800
+      name: "Windows Server Hybrid Administrator Associate"
+      tier: Role-Based
+      role: "Administrator"
+      relevance: low
+      maps_to: []
+      notes: "Infrastructure — only if on-prem hybrid needed"
+
+    - id: AZ-801
+      name: "Windows Server Hybrid Administrator Associate (Part 2)"
+      tier: Role-Based
+      role: "Administrator"
+      relevance: low
+      maps_to: []
+
+    - id: DP-600
+      name: "Fabric Analytics Engineer Associate"
+      tier: Role-Based
+      role: "Data Engineer"
+      relevance: supporting
+      maps_to: []
+      notes: "Microsoft Fabric — relevant if lakehouse moves to Fabric"
+
+    - id: DP-100
+      name: "Azure Data Scientist Associate"
+      tier: Role-Based
+      role: "Data Scientist"
+      relevance: supporting
+      maps_to:
+        - azure_ai.foundry.fine_tuning
+        - azure_ai.foundry.genai_model_performance
+      notes: "ML/fine-tuning skills for domain-specific model optimization"
+
+    - id: DP-300
+      name: "Azure Database Administrator Associate"
+      tier: Role-Based
+      role: "DBA"
+      relevance: low
+      maps_to: []
+      notes: "Database admin — Supabase/PostgreSQL managed externally"
+
+  # --- Role-Based (Expert) ---
+  role_based_expert:
+    - id: AZ-305
+      name: "Azure Solutions Architect Expert"
+      tier: Role-Based
+      role: "Solutions Architect"
+      relevance: critical
+      prereqs: [AZ-104]
+      maps_to:
+        - azure_ai.foundry.ai_solutions_architecture
+        - azure_ai.foundry.agents_on_azure
+      notes: "Architecture decisions — Foundry vs custom, scaling, multi-region"
+
+    - id: AZ-400
+      name: "DevOps Engineer Expert"
+      tier: Role-Based
+      role: "DevOps Engineer"
+      relevance: critical
+      prereqs: [AZ-104]
+      maps_to:
+        - azure_ai.foundry.genaiops
+        - azure_ai.foundry.ml_genai_ops
+      notes: "CI/CD pipeline, GenAIOps, agent deployment automation"
+
+    - id: AI-300
+      name: "Azure Data Scientist Associate"
+      tier: Role-Based
+      role: "Data Scientist"
+      relevance: supporting
+      maps_to:
+        - azure_ai.foundry.fine_tuning
+        - azure_ai.foundry.agent_optimization
+        - azure_ai.foundry.genai_model_performance
+      notes: "Advanced ML — fine-tuning and optimization for production agents"
+
+    - id: AZ-104
+      name: "Azure Administrator Associate"
+      tier: Role-Based
+      role: "Administrator"
+      relevance: supporting
+      maps_to: []
+      notes: "Azure admin baseline — prereq for AZ-305 and AZ-400"
+
+  # --- Specialty ---
+  specialty:
+    - id: AZ-120
+      name: "Azure for SAP Workloads Specialty"
+      tier: Specialty
+      role: "SAP/Azure"
+      relevance: supporting
+      maps_to: []
+      notes: "SAP migration context — parity tracking reference"
+
+    - id: DP-420
+      name: "Azure Cosmos DB Developer Specialty"
+      tier: Specialty
+      role: "Developer"
+      relevance: low
+      maps_to: []
+
+  # --- GitHub ---
+  github:
+    - id: GH-900
+      name: "GitHub Foundations"
+      tier: Fundamentals
+      role: "All developers"
+      relevance: supporting
+      maps_to: []
+      notes: "GitHub baseline"
+
+    - id: GH-100
+      name: "GitHub Administration"
+      tier: Specialty
+      role: "Admin"
+      relevance: supporting
+      maps_to: []
+
+    - id: GH-200
+      name: "GitHub Actions"
+      tier: Specialty
+      role: "DevOps"
+      relevance: critical
+      maps_to:
+        - azure_ai.foundry.genaiops
+      notes: "CI/CD — copilot-deploy.yml workflow maintenance"
+
+    - id: GH-300
+      name: "GitHub Copilot"
+      tier: Specialty
+      role: "Developer"
+      relevance: supporting
+      maps_to: []
+      notes: "Developer productivity — code assist for agent development"
+
+    - id: GH-500
+      name: "GitHub Advanced Security"
+      tier: Specialty
+      role: "Security"
+      relevance: supporting
+      maps_to: []
+      notes: "Supply chain security for agent dependencies"
+
+# =============================================================================
+# AI BUSINESS SOLUTIONS
+# =============================================================================
+
+ai_business_solutions:
+
+  fundamentals:
+    - id: AB-900
+      name: "Microsoft 365 Copilot and Agent Administration Fundamentals"
+      tier: Fundamentals
+      role: "Admin"
+      relevance: critical
+      maps_to:
+        - azure_ai.foundry.agents_on_azure
+        - azure_ai.business.teams_policies
+      notes: "Copilot admin — essential for managing published Agent Applications"
+
+    - id: MS-900
+      name: "Microsoft 365 Fundamentals"
+      tier: Fundamentals
+      role: "All"
+      relevance: low
+      maps_to: []
+
+    - id: PL-900
+      name: "Power Platform Fundamentals"
+      tier: Fundamentals
+      role: "Citizen Developer"
+      relevance: low
+      maps_to: []
+
+  role_based:
+    - id: AB-100
+      name: "Agentic AI Business Solutions Architect"
+      tier: Role-Based
+      role: "Solution Architect"
+      relevance: critical
+      maps_to:
+        - azure_ai.foundry.ai_solutions_architecture
+        - azure_ai.foundry.agents_on_azure
+        - azure_ai.foundry.generative_ai_apps
+        - azure_ai.business.ai_powered_testing
+      notes: "KEY CERT — Agentic AI architecture for business solutions"
+
+    - id: MB-210
+      name: "Dynamics 365 Customer Services Functional Consultant"
+      tier: Role-Based
+      role: "Functional Consultant"
+      relevance: low
+      maps_to: []
+
+    - id: MB-310
+      name: "Dynamics 365 Finance Functional Consultant Associate"
+      tier: Role-Based
+      role: "Finance Consultant"
+      relevance: supporting
+      maps_to: []
+      notes: "Finance functional — ERP parity reference for close management"
+
+    - id: MB-800
+      name: "Dynamics 365 Business Central Functional Consultant"
+      tier: Role-Based
+      role: "Functional Consultant"
+      relevance: low
+      maps_to: []
+
+    - id: PL-500
+      name: "Power Automate RPA Developer Associate"
+      tier: Role-Based
+      role: "RPA Developer"
+      relevance: low
+      maps_to: []
+
+    - id: PL-600
+      name: "Power Platform Solution Architect Expert"
+      tier: Role-Based
+      role: "Solution Architect"
+      relevance: low
+      maps_to: []
+
+    - id: PL-200
+      name: "Power Platform Functional Consultant Associate"
+      tier: Role-Based
+      role: "Functional Consultant"
+      relevance: low
+      maps_to: []
+
+    - id: PL-400
+      name: "Power Platform Developer Associate"
+      tier: Role-Based
+      role: "Developer"
+      relevance: low
+      maps_to: []
+
+    - id: MB-700
+      name: "Dynamics 365 Finance and Operations Apps Solution Architect Expert"
+      tier: Role-Based
+      role: "Solution Architect"
+      relevance: supporting
+      maps_to: []
+      notes: "ERP architecture reference — close orchestration patterns"
+
+    - id: MB-330
+      name: "Dynamics 365 Supply Chain Management Functional Consultant"
+      tier: Role-Based
+      role: "Functional Consultant"
+      relevance: low
+      maps_to: []
+
+    - id: MB-335
+      name: "Dynamics 365 Supply Chain Management Expert"
+      tier: Role-Based
+      role: "Expert"
+      relevance: low
+      maps_to: []
+
+    - id: MB-820
+      name: "Dynamics 365 Business Central Developer Associate"
+      tier: Role-Based
+      role: "Developer"
+      relevance: low
+      maps_to: []
+
+  # --- Dynamics ---
+  dynamics_additional:
+    - id: MB-240
+      name: "Dynamics 365 Field Service Functional Consultant Associate"
+      tier: Role-Based
+      role: "Functional Consultant"
+      relevance: low
+      maps_to: []
+
+    - id: MB-280
+      name: "Dynamics 365 Customer Experience Analyst Associate"
+      tier: Role-Based
+      role: "Analyst"
+      relevance: low
+      maps_to: []
+
+    - id: MB-500
+      name: "Dynamics 365 Finance and Operations Apps Developer Associate"
+      tier: Role-Based
+      role: "Developer"
+      relevance: low
+      maps_to: []
+
+  business:
+    - id: AB-730
+      name: "AI Business Professional"
+      tier: Business
+      role: "Business Leader"
+      relevance: supporting
+      maps_to: []
+      notes: "Business stakeholder AI literacy"
+
+    - id: AB-731
+      name: "AI Transformation Leader"
+      tier: Business
+      role: "Executive"
+      relevance: supporting
+      maps_to: []
+      notes: "Executive AI strategy alignment"
+
+# =============================================================================
+# SECURITY
+# =============================================================================
+
+security:
+
+  fundamentals:
+    - id: SC-900
+      name: "Security, Compliance, and Identity Fundamentals"
+      tier: Fundamentals
+      role: "All"
+      relevance: core
+      maps_to: []
+      notes: "Security baseline — required for all agent developers"
+
+  role_based:
+    - id: SC-300
+      name: "Identity and Access Administrator Associate"
+      tier: Role-Based
+      role: "Identity Admin"
+      relevance: critical
+      maps_to: []
+      notes: "Entra ID / Managed Identity — auth for Foundry agent calls"
+
+    - id: SC-100
+      name: "Cybersecurity Architect Expert"
+      tier: Role-Based
+      role: "Security Architect"
+      relevance: supporting
+      maps_to: []
+      notes: "Security architecture for agent-to-agent communication"
+
+    - id: SC-200
+      name: "Security Operations Analyst Associate"
+      tier: Role-Based
+      role: "SecOps"
+      relevance: supporting
+      maps_to: []
+      notes: "Monitoring and threat detection for agent runtime"
+
+    - id: SC-401
+      name: "Information Security Administrator Associate"
+      tier: Role-Based
+      role: "InfoSec"
+      relevance: supporting
+      maps_to: []
+
+    - id: AZ-500
+      name: "Azure Security Engineer Associate"
+      tier: Role-Based
+      role: "Security Engineer"
+      relevance: critical
+      maps_to: []
+      notes: "Azure security controls for Foundry and Odoo infrastructure"
+
+# =============================================================================
+# PRIORITY MATRIX — Team Certification Roadmap
+# =============================================================================
+
+priority_roadmap:
+  immediate:
+    description: "Required for go-live"
+    certs:
+      - AI-102   # AI Engineer — all AI services
+      - AZ-204   # Developer — Foundry integration
+      - SC-300   # Identity — Entra ID auth
+      - AB-900   # Copilot Admin — agent management
+      - GH-200   # GitHub Actions — CI/CD
+
+  next_quarter:
+    description: "Production hardening"
+    certs:
+      - AZ-305   # Architecture — scaling decisions
+      - AZ-400   # DevOps — GenAIOps
+      - AB-100   # Agentic AI Architect
+      - AZ-500   # Security Engineer
+      - AI-900   # AI Fundamentals (team-wide)
+
+  future:
+    description: "Advanced optimization"
+    certs:
+      - AI-300   # Data Scientist — fine-tuning
+      - DP-600   # Fabric — data platform
+      - SC-100   # Security Architect
+      - GH-300   # GitHub Copilot
+      - AB-731   # AI Transformation Leader

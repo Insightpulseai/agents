@@ -61,6 +61,13 @@ frameworks:
       - "https://www.sec.gov/rules/final/33-8238.htm"
     notes: "ICFR, evidence, audit trails"
 
+  azure_ai_foundry:
+    label: "Azure AI Foundry Platform"
+    refs:
+      - "https://learn.microsoft.com/en-us/azure/ai-foundry/"
+      - "https://learn.microsoft.com/en-us/azure/ai-services/"
+    notes: "AI agents, Foundry runtime, Language, Speech, Vision, Document Intelligence, AI Search, GenAIOps"
+
 # Capability groups
 capability_groups:
   - id: close_orchestration
@@ -83,6 +90,8 @@ capability_groups:
     title: "Process Intelligence"
   - id: ui
     title: "Close Cockpit UI"
+  - id: azure_ai
+    title: "Azure AI Platform Capabilities"
 
 # =============================================================================
 # CAPABILITY ITEMS
@@ -683,3 +692,205 @@ items:
       - "First pass yield charts"
       - "Benchmark comparisons"
     owner: "frontend"
+
+  # ===========================================================================
+  # 11. AZURE AI PLATFORM CAPABILITIES
+  # ===========================================================================
+  # Target Azure AI services for agent framework integration
+  # Source: Microsoft Learn modules + Certifications poster (March 2026)
+  # Reference: agents/capabilities/azure_ai_target.yaml
+  # ===========================================================================
+
+  # --- Language & Text ---
+  - id: azure_ai.language.text_analysis
+    group: azure_ai
+    name: "Text Analysis Agent (Language MCP Server)"
+    priority: important
+    frameworks: [azure_ai_foundry]
+    acceptance:
+      - "MCP server connects to Azure Language service"
+      - "Entity recognition, sentiment, key phrase extraction"
+      - "Integration with copilot for document parsing"
+    owner: "platform"
+
+  - id: azure_ai.language.foundry_tools
+    group: azure_ai
+    name: "Language analysis in Foundry Tools"
+    priority: important
+    frameworks: [azure_ai_foundry]
+    acceptance:
+      - "In-Foundry text analytics available to agent"
+      - "Language detection and translation"
+    owner: "platform"
+
+  # --- Speech ---
+  - id: azure_ai.speech.agent
+    group: azure_ai
+    name: "Speech Agent (Speech MCP Server)"
+    priority: nice
+    frameworks: [azure_ai_foundry]
+    acceptance:
+      - "MCP server connects to Azure Speech service"
+      - "Speech-to-text for voice-driven copilot queries"
+      - "Text-to-speech for advisory responses"
+    owner: "platform"
+
+  - id: azure_ai.speech.genai_app
+    group: azure_ai
+    name: "Speech-capable generative AI application"
+    priority: nice
+    frameworks: [azure_ai_foundry]
+    acceptance:
+      - "Voice input/output integrated with Foundry agent"
+    owner: "platform"
+
+  # --- Vision & Document Intelligence ---
+  - id: azure_ai.vision.computer_vision
+    group: azure_ai
+    name: "Computer Vision solutions"
+    priority: important
+    frameworks: [azure_ai_foundry]
+    acceptance:
+      - "Receipt/invoice image processing"
+      - "Document scan analysis and OCR"
+    owner: "platform"
+
+  - id: azure_ai.vision.multimodal
+    group: azure_ai
+    name: "Multimodal analysis (Content Understanding)"
+    priority: important
+    frameworks: [azure_ai_foundry]
+    acceptance:
+      - "Combined text+image analysis"
+      - "Audit evidence visual verification"
+    owner: "platform"
+
+  - id: azure_ai.document.intelligence
+    group: azure_ai
+    name: "Document Intelligence data extraction"
+    priority: core
+    frameworks: [azure_ai_foundry]
+    acceptance:
+      - "BIR form extraction"
+      - "Invoice and receipt OCR"
+      - "Custom model for Philippine tax documents"
+    owner: "platform"
+
+  - id: azure_ai.document.content_understanding
+    group: azure_ai
+    name: "Content Understanding client"
+    priority: important
+    frameworks: [azure_ai_foundry]
+    acceptance:
+      - "Custom document understanding pipeline"
+      - "Multi-format content analysis"
+    owner: "platform"
+
+  # --- Knowledge & Search ---
+  - id: azure_ai.search.knowledge_mining
+    group: azure_ai
+    name: "Knowledge mining with AI Search"
+    priority: core
+    frameworks: [azure_ai_foundry]
+    acceptance:
+      - "RAG knowledge base for compliance guidance"
+      - "Semantic search across policy documents"
+      - "Grounded responses with citations"
+    owner: "platform"
+
+  - id: azure_ai.search.information_extraction
+    group: azure_ai
+    name: "AI information extraction solutions"
+    priority: important
+    frameworks: [azure_ai_foundry]
+    acceptance:
+      - "Structured extraction from regulatory docs"
+      - "Entity and relationship extraction"
+    owner: "platform"
+
+  # --- Agent & Foundry Runtime ---
+  - id: azure_ai.foundry.agent_publish
+    group: azure_ai
+    name: "Foundry Agent Application publish & consume"
+    priority: core
+    frameworks: [azure_ai_foundry]
+    acceptance:
+      - "Agent saved, traced, evaluated, published"
+      - "Stable endpoint consumed via Responses API"
+      - "Managed Identity authentication"
+    owner: "platform"
+
+  - id: azure_ai.foundry.agent_optimization
+    group: azure_ai
+    name: "AI agent optimization for production"
+    priority: important
+    frameworks: [azure_ai_foundry]
+    acceptance:
+      - "Latency p95 < 8s"
+      - "Token usage optimization"
+      - "Tool call efficiency"
+    owner: "platform"
+
+  - id: azure_ai.foundry.fine_tuning
+    group: azure_ai
+    name: "Language model fine-tuning"
+    priority: nice
+    frameworks: [azure_ai_foundry]
+    acceptance:
+      - "Domain-specific fine-tune for PH compliance"
+      - "Eval comparison vs base model"
+    owner: "data"
+
+  - id: azure_ai.foundry.genaiops
+    group: azure_ai
+    name: "GenAIOps — operationalize generative AI"
+    priority: core
+    frameworks: [azure_ai_foundry]
+    acceptance:
+      - "CI/CD pipeline for agent versioning"
+      - "Automated eval gates"
+      - "Staging soak and production promotion"
+      - "Monitoring and observability"
+    owner: "platform"
+
+  - id: azure_ai.foundry.genai_performance
+    group: azure_ai
+    name: "GenAI model performance optimization"
+    priority: important
+    frameworks: [azure_ai_foundry]
+    acceptance:
+      - "Throughput and latency benchmarks"
+      - "Cost optimization per query"
+    owner: "platform"
+
+  # --- Video & Media ---
+  - id: azure_ai.media.video_generation
+    group: azure_ai
+    name: "Video generation with Foundry"
+    priority: nice
+    frameworks: [azure_ai_foundry]
+    acceptance:
+      - "Training video auto-generation"
+      - "Report walkthrough recordings"
+    owner: "platform"
+
+  # --- Business Solutions ---
+  - id: azure_ai.business.testing
+    group: azure_ai
+    name: "AI-powered business solutions testing"
+    priority: important
+    frameworks: [azure_ai_foundry]
+    acceptance:
+      - "Automated testing of copilot business workflows"
+      - "Regression detection for advisory quality"
+    owner: "qa"
+
+  - id: azure_ai.business.teams_integration
+    group: azure_ai
+    name: "Teams integration and policies"
+    priority: nice
+    frameworks: [azure_ai_foundry]
+    acceptance:
+      - "Copilot accessible via Teams channel"
+      - "Teams policies configured for agent access"
+    owner: "platform"
