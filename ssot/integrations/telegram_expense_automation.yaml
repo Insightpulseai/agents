@@ -1,0 +1,67 @@
+integration: telegram_expense_automation
+status: proposed
+source_channel: telegram
+document_sources:
+  - image
+  - pdf
+supported_document_types:
+  - receipt
+  - invoice
+  - official_receipt
+target_system: odoo
+target_models:
+  - hr.expense
+  - account.move
+ocr_provider: azure_document_intelligence
+orchestrator: azure_foundry
+review_surface: odoo_copilot
+write_policy:
+  mode: draft_only_v1
+  allowed_actions:
+    - create_draft_expense
+    - create_draft_vendor_bill
+    - update_draft_fields
+    - attach_source_document
+    - write_audit_metadata
+  disallowed_actions:
+    - post_journal_entry
+    - execute_payment
+    - mutate_production_config
+    - delete_records
+correlation_chain:
+  - telegram_message_id
+  - telegram_file_id
+  - stored_file_ref
+  - ocr_result_ref
+  - foundry_trace_id
+  - odoo_target_ref
+routing_bands:
+  green:
+    action: auto_create_draft
+    criteria:
+      - high_confidence
+      - fields_complete
+      - vendor_or_employee_matched
+      - below_approval_threshold
+      - no_duplicate_flags
+  yellow:
+    action: clarify_or_review
+    criteria:
+      - missing_fields
+      - low_confidence
+      - ambiguous_routing
+      - unknown_vendor
+      - tax_mismatch
+  red:
+    action: manual_approval_required
+    criteria:
+      - duplicate_suspected
+      - amount_above_threshold
+      - vendor_mismatch
+      - unsupported_document_type
+      - material_accounting_impact
+spec_refs:
+  - spec/telegram-expense-automation/constitution.md
+  - spec/telegram-expense-automation/prd.md
+  - spec/telegram-expense-automation/plan.md
+  - spec/telegram-expense-automation/tasks.md
