@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Form View -->
+    <record id="view_foundry_provider_config_form" model="ir.ui.view">
+        <field name="name">ipai.foundry.provider.config.form</field>
+        <field name="model">ipai.foundry.provider.config</field>
+        <field name="arch" type="xml">
+            <form string="Foundry Provider Configuration">
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Configuration Name"/></h1>
+                    </div>
+                    <group>
+                        <group string="Provider">
+                            <field name="provider_type"/>
+                            <field name="active"/>
+                        </group>
+                        <group string="Authentication">
+                            <field name="auth_mode"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Foundry Endpoints" name="endpoints">
+                            <group>
+                                <group string="Foundry Project">
+                                    <field name="foundry_project_name"/>
+                                    <field name="foundry_project_endpoint"/>
+                                </group>
+                                <group string="Resource Endpoints">
+                                    <field name="foundry_resource_endpoint"/>
+                                    <field name="azure_openai_endpoint"/>
+                                    <field name="azure_location"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Model &amp; Agent" name="model_agent">
+                            <group>
+                                <group>
+                                    <field name="model_deployment_name"/>
+                                    <field name="agent_name"/>
+                                </group>
+                                <group>
+                                    <field name="read_only_mode"/>
+                                    <field name="agent_memory"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Search" name="search">
+                            <group>
+                                <field name="search_service_name"/>
+                                <field name="search_connection_name"/>
+                                <field name="search_index_name"/>
+                            </group>
+                        </page>
+                        <page string="Credentials" name="credentials">
+                            <group>
+                                <group string="API Key" invisible="auth_mode != 'api_key'">
+                                    <field name="api_key_secret_ref" password="True"/>
+                                </group>
+                                <group string="Service Principal" invisible="auth_mode != 'entra_id'">
+                                    <field name="tenant_id"/>
+                                    <field name="client_id"/>
+                                    <field name="client_secret_ref" password="True"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- List View -->
+    <record id="view_foundry_provider_config_list" model="ir.ui.view">
+        <field name="name">ipai.foundry.provider.config.list</field>
+        <field name="model">ipai.foundry.provider.config</field>
+        <field name="arch" type="xml">
+            <list string="Foundry Provider Configurations">
+                <field name="name"/>
+                <field name="provider_type"/>
+                <field name="auth_mode"/>
+                <field name="foundry_project_name"/>
+                <field name="azure_location"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_foundry_provider_config" model="ir.actions.act_window">
+        <field name="name">Foundry Provider</field>
+        <field name="res_model">ipai.foundry.provider.config</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Menu -->
+    <menuitem id="menu_foundry_provider_root"
+              name="AI Foundry"
+              sequence="100"/>
+    <menuitem id="menu_foundry_provider_config"
+              name="Provider Configuration"
+              parent="menu_foundry_provider_root"
+              action="action_foundry_provider_config"
+              sequence="10"/>
+</odoo>

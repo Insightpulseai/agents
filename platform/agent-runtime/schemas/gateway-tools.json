@@ -1,0 +1,345 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Odoo Agent Gateway Tool Definitions",
+  "description": "Schema definitions for all Odoo Agent Gateway tools used by the agent runtime.",
+  "version": "1.0.0",
+  "tools": {
+    "odoo.search_partners": {
+      "description": "Search customers, vendors, or contacts by criteria.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "query": { "type": "string", "description": "Free-text search query" },
+          "partner_type": { "type": "string", "enum": ["customer", "vendor", "contact", "all"], "default": "all" },
+          "domain": { "type": "array", "description": "Odoo domain filter expression", "items": { "type": "array" } },
+          "limit": { "type": "integer", "default": 20, "maximum": 100 },
+          "offset": { "type": "integer", "default": 0 },
+          "fields": { "type": "array", "items": { "type": "string" }, "default": ["id", "name", "email", "phone", "city", "country_id"] }
+        },
+        "required": []
+      },
+      "returns": {
+        "type": "object",
+        "properties": {
+          "records": { "type": "array" },
+          "total_count": { "type": "integer" },
+          "metadata": { "$ref": "#/definitions/response_metadata" }
+        }
+      }
+    },
+    "odoo.get_invoices": {
+      "description": "Fetch customer invoices with optional filters.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "state": { "type": "string", "enum": ["draft", "posted", "cancel", "all"], "default": "all" },
+          "payment_state": { "type": "string", "enum": ["not_paid", "partial", "paid", "reversed", "all"], "default": "all" },
+          "partner_id": { "type": "integer", "description": "Filter by customer ID" },
+          "date_from": { "type": "string", "format": "date" },
+          "date_to": { "type": "string", "format": "date" },
+          "amount_min": { "type": "number" },
+          "amount_max": { "type": "number" },
+          "overdue_only": { "type": "boolean", "default": false },
+          "limit": { "type": "integer", "default": 20, "maximum": 100 },
+          "offset": { "type": "integer", "default": 0 }
+        },
+        "required": []
+      },
+      "returns": {
+        "type": "object",
+        "properties": {
+          "records": { "type": "array" },
+          "total_count": { "type": "integer" },
+          "summary": { "$ref": "#/definitions/financial_summary" },
+          "metadata": { "$ref": "#/definitions/response_metadata" }
+        }
+      }
+    },
+    "odoo.get_bills": {
+      "description": "Fetch vendor bills with optional filters.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "state": { "type": "string", "enum": ["draft", "posted", "cancel", "all"], "default": "all" },
+          "payment_state": { "type": "string", "enum": ["not_paid", "partial", "paid", "reversed", "all"], "default": "all" },
+          "partner_id": { "type": "integer", "description": "Filter by vendor ID" },
+          "date_from": { "type": "string", "format": "date" },
+          "date_to": { "type": "string", "format": "date" },
+          "overdue_only": { "type": "boolean", "default": false },
+          "limit": { "type": "integer", "default": 20, "maximum": 100 },
+          "offset": { "type": "integer", "default": 0 }
+        },
+        "required": []
+      },
+      "returns": {
+        "type": "object",
+        "properties": {
+          "records": { "type": "array" },
+          "total_count": { "type": "integer" },
+          "summary": { "$ref": "#/definitions/financial_summary" },
+          "metadata": { "$ref": "#/definitions/response_metadata" }
+        }
+      }
+    },
+    "odoo.get_overdue_summary": {
+      "description": "Get overdue invoice/bill analysis grouped by customer or vendor.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "type": { "type": "string", "enum": ["receivable", "payable", "both"], "default": "receivable" },
+          "group_by": { "type": "string", "enum": ["partner", "age_bracket", "salesperson"], "default": "partner" },
+          "limit": { "type": "integer", "default": 20, "maximum": 100 },
+          "age_brackets": {
+            "type": "array",
+            "items": { "type": "integer" },
+            "default": [30, 60, 90, 120],
+            "description": "Day thresholds for aging buckets"
+          }
+        },
+        "required": []
+      },
+      "returns": {
+        "type": "object",
+        "properties": {
+          "groups": { "type": "array" },
+          "total_overdue": { "type": "number" },
+          "total_count": { "type": "integer" },
+          "metadata": { "$ref": "#/definitions/response_metadata" }
+        }
+      }
+    },
+    "odoo.get_record_history": {
+      "description": "Fetch chatter messages and tracking for a record.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "model": { "type": "string", "description": "Odoo model name (e.g., account.move)" },
+          "res_id": { "type": "integer", "description": "Record ID" },
+          "limit": { "type": "integer", "default": 20 },
+          "message_types": {
+            "type": "array",
+            "items": { "type": "string", "enum": ["comment", "notification", "email", "tracking"] }
+          }
+        },
+        "required": ["model", "res_id"]
+      },
+      "returns": {
+        "type": "object",
+        "properties": {
+          "messages": { "type": "array" },
+          "metadata": { "$ref": "#/definitions/response_metadata" }
+        }
+      }
+    },
+    "odoo.get_user_context": {
+      "description": "Fetch current user permissions, company, and context.",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      },
+      "returns": {
+        "type": "object",
+        "properties": {
+          "user_id": { "type": "integer" },
+          "user_name": { "type": "string" },
+          "company_id": { "type": "integer" },
+          "company_name": { "type": "string" },
+          "allowed_companies": { "type": "array" },
+          "groups": { "type": "array", "items": { "type": "string" } },
+          "permissions": {
+            "type": "object",
+            "properties": {
+              "can_read_invoices": { "type": "boolean" },
+              "can_write_invoices": { "type": "boolean" },
+              "can_read_bills": { "type": "boolean" },
+              "can_write_bills": { "type": "boolean" },
+              "can_read_partners": { "type": "boolean" },
+              "can_write_partners": { "type": "boolean" },
+              "can_read_projects": { "type": "boolean" },
+              "can_read_inventory": { "type": "boolean" }
+            }
+          },
+          "metadata": { "$ref": "#/definitions/response_metadata" }
+        }
+      }
+    },
+    "odoo.create_draft_invoice": {
+      "description": "Create a customer invoice in draft state.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "partner_id": { "type": "integer", "description": "Customer ID" },
+          "invoice_date": { "type": "string", "format": "date" },
+          "lines": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "product_id": { "type": "integer" },
+                "name": { "type": "string" },
+                "quantity": { "type": "number" },
+                "price_unit": { "type": "number" },
+                "tax_ids": { "type": "array", "items": { "type": "integer" } }
+              },
+              "required": ["name", "quantity", "price_unit"]
+            }
+          },
+          "narration": { "type": "string", "description": "Internal notes" },
+          "dry_run": { "type": "boolean", "default": true, "description": "Preview without creating" }
+        },
+        "required": ["partner_id", "lines"]
+      },
+      "returns": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "name": { "type": "string" },
+          "state": { "type": "string" },
+          "amount_total": { "type": "number" },
+          "url": { "type": "string", "description": "Deep link to Odoo record" },
+          "dry_run": { "type": "boolean" },
+          "metadata": { "$ref": "#/definitions/response_metadata" }
+        }
+      }
+    },
+    "odoo.create_activity": {
+      "description": "Schedule an activity (follow-up, reminder, etc.) on any record.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "model": { "type": "string" },
+          "res_id": { "type": "integer" },
+          "activity_type": { "type": "string", "enum": ["email", "call", "meeting", "todo", "upload_document"], "default": "todo" },
+          "summary": { "type": "string" },
+          "note": { "type": "string" },
+          "date_deadline": { "type": "string", "format": "date" },
+          "user_id": { "type": "integer", "description": "Assigned user (defaults to current user)" }
+        },
+        "required": ["model", "res_id", "summary", "date_deadline"]
+      },
+      "returns": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "metadata": { "$ref": "#/definitions/response_metadata" }
+        }
+      }
+    },
+    "odoo.post_message": {
+      "description": "Post a message to the chatter of any record.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "model": { "type": "string" },
+          "res_id": { "type": "integer" },
+          "body": { "type": "string", "description": "Message body (HTML allowed)" },
+          "message_type": { "type": "string", "enum": ["comment", "notification"], "default": "comment" },
+          "subtype": { "type": "string", "default": "mail.mt_comment" }
+        },
+        "required": ["model", "res_id", "body"]
+      },
+      "returns": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "metadata": { "$ref": "#/definitions/response_metadata" }
+        }
+      }
+    },
+    "odoo.check_permission": {
+      "description": "Verify if the current user can perform an action.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "model": { "type": "string" },
+          "operation": { "type": "string", "enum": ["read", "write", "create", "unlink"] },
+          "res_ids": { "type": "array", "items": { "type": "integer" }, "description": "Specific record IDs to check" }
+        },
+        "required": ["model", "operation"]
+      },
+      "returns": {
+        "type": "object",
+        "properties": {
+          "allowed": { "type": "boolean" },
+          "reason": { "type": "string" },
+          "metadata": { "$ref": "#/definitions/response_metadata" }
+        }
+      }
+    },
+    "odoo.dry_run": {
+      "description": "Preview the result of a write operation without executing it.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "tool": { "type": "string", "description": "The write tool to preview (e.g., odoo.create_draft_invoice)" },
+          "parameters": { "type": "object", "description": "Parameters for the write tool" }
+        },
+        "required": ["tool", "parameters"]
+      },
+      "returns": {
+        "type": "object",
+        "properties": {
+          "preview": { "type": "object", "description": "What would be created/modified" },
+          "validation_errors": { "type": "array", "items": { "type": "string" } },
+          "requires_approval": { "type": "boolean" },
+          "metadata": { "$ref": "#/definitions/response_metadata" }
+        }
+      }
+    },
+    "odoo.search_docs": {
+      "description": "Search module documentation and help content.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "query": { "type": "string" },
+          "module": { "type": "string", "description": "Filter by Odoo module" },
+          "doc_type": { "type": "string", "enum": ["module_doc", "sop", "runbook", "implementation_note", "all"], "default": "all" },
+          "limit": { "type": "integer", "default": 5 }
+        },
+        "required": ["query"]
+      },
+      "returns": {
+        "type": "object",
+        "properties": {
+          "results": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "title": { "type": "string" },
+                "snippet": { "type": "string" },
+                "source": { "type": "string" },
+                "section": { "type": "string" },
+                "score": { "type": "number" },
+                "last_indexed": { "type": "string", "format": "date-time" }
+              }
+            }
+          },
+          "metadata": { "$ref": "#/definitions/response_metadata" }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "response_metadata": {
+      "type": "object",
+      "properties": {
+        "trace_id": { "type": "string", "format": "uuid" },
+        "timestamp": { "type": "string", "format": "date-time" },
+        "duration_ms": { "type": "integer" },
+        "company_id": { "type": "integer" },
+        "user_id": { "type": "integer" }
+      }
+    },
+    "financial_summary": {
+      "type": "object",
+      "properties": {
+        "total_amount": { "type": "number" },
+        "total_residual": { "type": "number" },
+        "currency": { "type": "string" },
+        "count": { "type": "integer" }
+      }
+    }
+  }
+}

@@ -1,0 +1,29 @@
+guardrails:
+  - name: ipai-odoo-copilot-guardrail
+    type: custom
+    scope: agent
+    applied_to_agents:
+      - ipai-odoo-copilot-azure
+    owner_repo: ops-platform
+    behavioral_spec_repo: agents
+    rules:
+      - grounding_required
+      - confidence_threshold_0.5
+      - tenant_isolation
+      - write_confirmation
+      - no_fabrication
+      - tool_only_data_access
+
+  - name: Microsoft.Default
+    type: platform
+    scope: project
+    owner: microsoft
+    applied_to_projects:
+      - data-intel-ph
+
+  - name: Microsoft.DefaultV2
+    type: platform
+    scope: project
+    owner: microsoft
+    applied_to_projects:
+      - data-intel-ph

@@ -1,0 +1,12 @@
+model_deployments:
+  - name: gpt-4.1
+    kind: chat
+    owner_repo: ops-platform
+    consumed_by_agents:
+      - ipai-odoo-copilot-azure
+
+  - name: text-embedding-3-small
+    kind: embeddings
+    owner_repo: ops-platform
+    consumed_by_agents:
+      - ipai-odoo-copilot-azure

@@ -1,0 +1,23 @@
+name: ipai-odoo-copilot-azure
+type: prompt
+foundry_project: data-intel-ph
+
+model:
+  chat_deployment: gpt-4.1
+  embedding_deployment: text-embedding-3-small
+
+tools:
+  - name: srchipaidev8tlstu
+    kind: azure_ai_search
+
+guardrails:
+  - ipai-odoo-copilot-guardrail
+  - Microsoft.DefaultV2
+
+knowledge_sources:
+  - ../../knowledge/ipai-odoo-knowledge-base.md
+  - ../../knowledge/ipai-knowledge.md
+
+odoo_bridge:
+  repo: odoo
+  settings_model: foundry.provider.config

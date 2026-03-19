@@ -1,0 +1,16 @@
+foundry_projects:
+  - name: data-intel-ph
+    resource_group: rg-data-intel-ph
+    account_name: data-intel-ph-resource
+    project_endpoint: https://data-intel-ph-resource.services.ai.azure.com/api/projects/data-intel-ph
+    agents:
+      - ipai-odoo-copilot-azure
+    model_deployments:
+      - gpt-4.1
+      - text-embedding-3-small
+    tools:
+      - srchipaidev8tlstu
+    guardrails:
+      - ipai-odoo-copilot-guardrail
+      - Microsoft.Default
+      - Microsoft.DefaultV2

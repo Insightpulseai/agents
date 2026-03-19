@@ -1,0 +1,15 @@
+curated_ai_contracts:
+  - name: odoo_finance_close_kpis
+    layer: gold
+    serving_mode: databricks_sql
+    consumers:
+      - foundry:data-intel-ph
+      - powerbi
+    owner_repo: lakehouse
+
+  - name: odoo_domain_taxonomy
+    layer: silver
+    serving_mode: delta_table
+    consumers:
+      - foundry:data-intel-ph
+    owner_repo: lakehouse
