@@ -1,0 +1,490 @@
+# =============================================================================
+# AZURE AI TARGET CAPABILITIES
+# =============================================================================
+# Maps Azure AI Foundry services, MCP servers, and AI platform capabilities
+# to the InsightPulseAI agent framework.
+#
+# Source: Microsoft Learn modules + Azure AI Foundry catalog (March 2026)
+# =============================================================================
+
+version: 1
+meta:
+  product: InsightPulseAI Agent Framework
+  scope: Azure AI Platform Target Capabilities
+  updated: "2026-03-15"
+  source: "Microsoft Learn + Azure AI Foundry"
+
+# -----------------------------------------------------------------------------
+# Capability Categories
+# -----------------------------------------------------------------------------
+
+categories:
+  language_text:
+    label: "Language & Text Analytics"
+    description: "NLP, text analysis, language understanding, entity recognition"
+
+  speech:
+    label: "Speech Services"
+    description: "Speech-to-text, text-to-speech, speech-capable AI apps"
+
+  vision:
+    label: "Computer Vision & Image Analysis"
+    description: "Image analysis, multimodal understanding, visual data extraction"
+
+  document_intelligence:
+    label: "Document Intelligence"
+    description: "Document data extraction, form recognition, content understanding"
+
+  knowledge_search:
+    label: "Knowledge & Search"
+    description: "Knowledge mining, AI Search, information extraction, RAG patterns"
+
+  agent_foundry:
+    label: "Agent & Foundry Runtime"
+    description: "AI agents, Foundry agent applications, optimization, fine-tuning, GenAIOps"
+
+  video_media:
+    label: "Video & Media Generation"
+    description: "Video generation, media processing with Foundry"
+
+  business_solutions:
+    label: "AI Business Solutions"
+    description: "M365 Copilot integration, Teams, business productivity AI"
+
+# -----------------------------------------------------------------------------
+# Capabilities
+# -----------------------------------------------------------------------------
+
+capabilities:
+
+  # ---------------------------------------------------------------------------
+  # Language & Text Analytics
+  # ---------------------------------------------------------------------------
+  - id: azure_ai.language.text_analysis_agent
+    name: "Text Analysis Agent"
+    service: "Azure AI Language"
+    category: language_text
+    module_type: MODULE
+    duration: "52 min"
+    level: Intermediate
+    mcp_server: azure-language-mcp
+    agent_tool: text_analysis
+    status: target
+    description: "Develop a Text Analysis Agent with the Azure Language MCP Server"
+    relevance: "NLP for compliance document parsing, finding extraction"
+
+  - id: azure_ai.language.foundry_tools
+    name: "Language Analysis in Foundry Tools"
+    service: "Azure AI Language + Foundry"
+    category: language_text
+    module_type: MODULE
+    duration: "53 min"
+    level: Intermediate
+    mcp_server: null
+    agent_tool: language_analysis
+    status: target
+    description: "Analyze text with Azure Language in Foundry Tools"
+    relevance: "In-Foundry text analytics for copilot responses"
+
+  # ---------------------------------------------------------------------------
+  # Speech Services
+  # ---------------------------------------------------------------------------
+  - id: azure_ai.speech.speech_agent
+    name: "Speech Agent"
+    service: "Azure AI Speech"
+    category: speech
+    module_type: MODULE
+    duration: "52 min"
+    level: Intermediate
+    mcp_server: azure-speech-mcp
+    agent_tool: speech_recognition
+    status: target
+    description: "Develop a Speech Agent with the Azure Speech MCP Server"
+    relevance: "Voice-driven copilot interaction for hands-free ERP use"
+
+  - id: azure_ai.speech.capable_genai
+    name: "Speech-Capable Generative AI Application"
+    service: "Azure AI Speech + Foundry"
+    category: speech
+    module_type: MODULE
+    duration: "43 min"
+    level: Intermediate
+    mcp_server: null
+    agent_tool: speech_genai
+    status: target
+    description: "Develop a speech-capable generative AI application"
+    relevance: "Voice input/output for advisory responses"
+
+  - id: azure_ai.speech.enabled_apps
+    name: "Speech-Enabled Apps with Foundry"
+    service: "Microsoft Foundry"
+    category: speech
+    module_type: MODULE
+    duration: "53 min"
+    level: Intermediate
+    mcp_server: null
+    agent_tool: speech_app
+    status: target
+    description: "Create speech-enabled apps with Microsoft Foundry"
+    relevance: "Foundry-native speech integration for copilot"
+
+  # ---------------------------------------------------------------------------
+  # Computer Vision & Image Analysis
+  # ---------------------------------------------------------------------------
+  - id: azure_ai.vision.computer_vision_solutions
+    name: "Computer Vision Solutions"
+    service: "Azure AI Vision"
+    category: vision
+    module_type: LEARNING_PATH
+    duration: "2 hr 47 min"
+    level: Intermediate
+    mcp_server: null
+    agent_tool: computer_vision
+    status: target
+    description: "Develop computer vision solutions with Microsoft Foundry"
+    relevance: "Receipt/invoice image processing, document scan analysis"
+
+  - id: azure_ai.vision.image_analysis
+    name: "Image Analysis with Content Understanding"
+    service: "Azure Content Understanding"
+    category: vision
+    module_type: MODULE
+    duration: "43 min"
+    level: Intermediate
+    mcp_server: null
+    agent_tool: image_analysis
+    status: target
+    description: "Analyze images with Content Understanding"
+    relevance: "Visual document verification, receipt matching"
+
+  - id: azure_ai.vision.multimodal_analysis
+    name: "Multimodal Analysis"
+    service: "Azure Content Understanding"
+    category: vision
+    module_type: MODULE
+    duration: "1 hr"
+    level: Beginner
+    mcp_server: null
+    agent_tool: multimodal_analysis
+    status: target
+    description: "Create a multimodal analysis solution with Azure Content Understanding"
+    relevance: "Combined text+image analysis for audit evidence"
+
+  - id: azure_ai.vision.visual_data_extraction
+    name: "Visual Data Insights Extraction"
+    service: "Azure AI Vision"
+    category: vision
+    module_type: LEARNING_PATH
+    duration: "7 hr 6 min"
+    level: Intermediate
+    mcp_server: null
+    agent_tool: visual_extraction
+    status: target
+    description: "Extract insights from visual data on Azure"
+    relevance: "Dashboard screenshot analysis, chart data extraction"
+
+  - id: azure_ai.vision.computer_vision_lp
+    name: "Computer Vision Solutions (Advanced)"
+    service: "Azure AI Vision"
+    category: vision
+    module_type: LEARNING_PATH
+    duration: "6 hr 35 min"
+    level: Intermediate
+    mcp_server: null
+    agent_tool: null
+    status: target
+    description: "Develop computer vision solutions in Azure"
+    relevance: "Advanced vision pipelines for document processing"
+
+  # ---------------------------------------------------------------------------
+  # Document Intelligence
+  # ---------------------------------------------------------------------------
+  - id: azure_ai.document.intelligence
+    name: "Document Data Extraction"
+    service: "Azure Document Intelligence"
+    category: document_intelligence
+    module_type: MODULE
+    duration: "1 hr 11 min"
+    level: Intermediate
+    mcp_server: null
+    agent_tool: document_extraction
+    status: target
+    description: "Extract data with Azure Document Intelligence"
+    relevance: "BIR form extraction, invoice parsing, receipt OCR"
+
+  - id: azure_ai.document.content_understanding_client
+    name: "Content Understanding Client Application"
+    service: "Azure Content Understanding"
+    category: document_intelligence
+    module_type: MODULE
+    duration: "1 hr"
+    level: Intermediate
+    mcp_server: null
+    agent_tool: content_understanding
+    status: target
+    description: "Create an Azure Content Understanding client application"
+    relevance: "Custom document understanding for Philippine tax forms"
+
+  # ---------------------------------------------------------------------------
+  # Knowledge & Search
+  # ---------------------------------------------------------------------------
+  - id: azure_ai.search.knowledge_mining
+    name: "Knowledge Mining Solution"
+    service: "Azure AI Search"
+    category: knowledge_search
+    module_type: MODULE
+    duration: "1 hr 8 min"
+    level: Intermediate
+    mcp_server: null
+    agent_tool: knowledge_mining
+    status: target
+    description: "Create a knowledge mining solution with Azure AI Search"
+    relevance: "RAG knowledge base for compliance guidance, policy search"
+
+  - id: azure_ai.search.information_extraction
+    name: "AI Information Extraction Solutions"
+    service: "Azure AI Search + Document Intelligence"
+    category: knowledge_search
+    module_type: LEARNING_PATH
+    duration: "4 hr 18 min"
+    level: Intermediate
+    mcp_server: null
+    agent_tool: information_extraction
+    status: target
+    description: "Develop AI information extraction solutions in Azure"
+    relevance: "Structured extraction from regulatory documents"
+
+  # ---------------------------------------------------------------------------
+  # Agent & Foundry Runtime
+  # ---------------------------------------------------------------------------
+  - id: azure_ai.foundry.agents_on_azure
+    name: "AI Agents on Azure"
+    service: "Azure AI Foundry"
+    category: agent_foundry
+    module_type: LEARNING_PATH
+    duration: "9 hr 53 min"
+    level: Intermediate
+    mcp_server: null
+    agent_tool: null
+    status: in_progress
+    description: "Develop AI agents on Azure"
+    relevance: "Core capability — Foundry agent development lifecycle"
+
+  - id: azure_ai.foundry.generative_ai_apps
+    name: "Generative AI Apps in Azure"
+    service: "Azure AI Foundry"
+    category: agent_foundry
+    module_type: LEARNING_PATH
+    duration: "5 hr 17 min"
+    level: Intermediate
+    mcp_server: null
+    agent_tool: null
+    status: in_progress
+    description: "Develop generative AI apps in Azure"
+    relevance: "Foundry app development patterns for copilot"
+
+  - id: azure_ai.foundry.ai_apps_agents
+    name: "AI Apps and Agents on Azure"
+    service: "Azure AI Foundry"
+    category: agent_foundry
+    module_type: COURSE
+    duration: "4 Days"
+    level: Intermediate
+    mcp_server: null
+    agent_tool: null
+    status: target
+    description: "Develop AI apps and agents on Azure"
+    relevance: "Comprehensive agent development course"
+
+  - id: azure_ai.foundry.agent_optimization
+    name: "AI Agent Optimization for Production"
+    service: "Azure AI Foundry"
+    category: agent_foundry
+    module_type: MODULE
+    duration: "1 hr 29 min"
+    level: Intermediate
+    mcp_server: null
+    agent_tool: null
+    status: target
+    description: "Optimize and fine-tune AI agents for production"
+    relevance: "Production hardening for copilot agent"
+
+  - id: azure_ai.foundry.fine_tuning
+    name: "Language Model Fine-Tuning"
+    service: "Microsoft Foundry"
+    category: agent_foundry
+    module_type: MODULE
+    duration: "1 hr 23 min"
+    level: Intermediate
+    mcp_server: null
+    agent_tool: null
+    status: target
+    description: "Fine-tune a language model with Microsoft Foundry"
+    relevance: "Domain-specific fine-tuning for Philippine compliance"
+
+  - id: azure_ai.foundry.genai_model_performance
+    name: "GenAI Model Performance Optimization"
+    service: "Microsoft Foundry"
+    category: agent_foundry
+    module_type: MODULE
+    duration: "1 hr 41 min"
+    level: Intermediate
+    mcp_server: null
+    agent_tool: null
+    status: target
+    description: "Optimize generative AI model performance with Microsoft Foundry"
+    relevance: "Latency and quality optimization for copilot"
+
+  - id: azure_ai.foundry.genaiops
+    name: "GenAIOps — Operationalize Generative AI"
+    service: "Azure AI"
+    category: agent_foundry
+    module_type: LEARNING_PATH
+    duration: "6 hr 8 min"
+    level: Intermediate
+    mcp_server: null
+    agent_tool: null
+    status: target
+    description: "Operationalize generative AI applications (GenAIOps)"
+    relevance: "CI/CD, monitoring, eval loops for production agent"
+
+  - id: azure_ai.foundry.ml_genai_ops
+    name: "ML and Generative AI Operations"
+    service: "Azure ML + Foundry"
+    category: agent_foundry
+    module_type: COURSE
+    duration: "4 Days"
+    level: Intermediate
+    mcp_server: null
+    agent_tool: null
+    status: target
+    description: "Operationalize machine learning and generative AI solutions"
+    relevance: "End-to-end MLOps for agent pipeline"
+
+  - id: azure_ai.foundry.intro_ai_azure
+    name: "Introduction to AI in Azure"
+    service: "Azure AI"
+    category: agent_foundry
+    module_type: COURSE
+    duration: "1 Day"
+    level: Beginner
+    mcp_server: null
+    agent_tool: null
+    status: ready
+    description: "Introduction to AI in Azure"
+    relevance: "Foundational knowledge — team onboarding"
+
+  - id: azure_ai.foundry.plan_develop
+    name: "Plan and Prepare AI Solutions"
+    service: "Azure AI"
+    category: agent_foundry
+    module_type: MODULE
+    duration: "1 hr"
+    level: Beginner
+    mcp_server: null
+    agent_tool: null
+    status: ready
+    description: "Plan and prepare to develop AI solutions on Azure"
+    relevance: "Architecture planning for AI workloads"
+
+  - id: azure_ai.foundry.ai_solutions_architecture
+    name: "Architect AI Solutions for Business"
+    service: "Azure AI + M365"
+    category: agent_foundry
+    module_type: LEARNING_PATH
+    duration: "1 hr 24 min"
+    level: Advanced
+    mcp_server: null
+    agent_tool: null
+    status: target
+    description: "Architect AI solutions for business productivity"
+    relevance: "Enterprise architecture patterns for agent deployment"
+
+  - id: azure_ai.foundry.ai_concepts
+    name: "AI Concepts for Developers"
+    service: "Azure AI"
+    category: agent_foundry
+    module_type: LEARNING_PATH
+    duration: "3 hr 17 min"
+    level: Beginner
+    mcp_server: null
+    agent_tool: null
+    status: ready
+    description: "AI concepts for developers and technology professionals"
+    relevance: "Foundational — developer onboarding"
+
+  - id: azure_ai.foundry.cloud_native_apps
+    name: "Cloud Native Apps with Azure and OSS"
+    service: "Azure"
+    category: agent_foundry
+    module_type: LEARNING_PATH
+    duration: "27 min"
+    level: Intermediate
+    mcp_server: null
+    agent_tool: null
+    status: target
+    description: "Create cloud native apps with Azure and open-source software"
+    relevance: "Container/K8s deployment patterns for agent runtime"
+
+  # ---------------------------------------------------------------------------
+  # Video & Media
+  # ---------------------------------------------------------------------------
+  - id: azure_ai.media.video_generation
+    name: "Video Generation with Foundry"
+    service: "Microsoft Foundry"
+    category: video_media
+    module_type: MODULE
+    duration: "48 min"
+    level: Intermediate
+    mcp_server: null
+    agent_tool: video_generation
+    status: target
+    description: "Generate videos with Microsoft Foundry"
+    relevance: "Training video generation, report walkthroughs"
+
+  # ---------------------------------------------------------------------------
+  # AI Business Solutions
+  # ---------------------------------------------------------------------------
+  - id: azure_ai.business.ai_powered_testing
+    name: "AI-Powered Business Solutions Testing"
+    service: "Microsoft 365 + Foundry"
+    category: business_solutions
+    module_type: MODULE
+    duration: "55 min"
+    level: Advanced
+    mcp_server: null
+    agent_tool: null
+    status: target
+    description: "Manage testing AI-powered business solutions"
+    relevance: "Quality assurance for copilot business workflows"
+
+  - id: azure_ai.business.teams_policies
+    name: "Teams Policies for AI"
+    service: "Microsoft 365 Admin"
+    category: business_solutions
+    module_type: MODULE
+    duration: "48 min"
+    level: Intermediate
+    mcp_server: null
+    agent_tool: null
+    status: target
+    description: "Create and assign Teams policies to meet business requirements"
+    relevance: "Teams-based copilot channel distribution"
+
+# -----------------------------------------------------------------------------
+# Status Summary
+# -----------------------------------------------------------------------------
+summary:
+  total: 30
+  ready: 3
+  in_progress: 2
+  target: 25
+  coverage_by_category:
+    language_text: 2
+    speech: 3
+    vision: 5
+    document_intelligence: 2
+    knowledge_search: 2
+    agent_foundry: 13
+    video_media: 1
+    business_solutions: 2

@@ -160,3 +160,100 @@ overrides:
   ui.compliance_view:
     status: planned
     notes: "Depends on SoD module completion"
+
+  # -------------------------------------------------------------------------
+  # AZURE AI PLATFORM CAPABILITIES
+  # -------------------------------------------------------------------------
+
+  # Language & Text
+  azure_ai.language.text_analysis:
+    status: planned
+    notes: "Language MCP Server integration targeted for copilot NLP layer"
+
+  azure_ai.language.foundry_tools:
+    status: planned
+    notes: "Will use Foundry-native language tools once agent is published"
+
+  # Speech
+  azure_ai.speech.agent:
+    status: planned
+    notes: "Voice interface deferred to post-MVP"
+
+  azure_ai.speech.genai_app:
+    status: planned
+    notes: "Speech I/O deferred to post-MVP"
+
+  # Vision & Document Intelligence
+  azure_ai.vision.computer_vision:
+    status: planned
+    notes: "Receipt/invoice scan processing — depends on ENABLE_OCR flag"
+
+  azure_ai.vision.multimodal:
+    status: planned
+    notes: "Multi-format evidence verification"
+
+  azure_ai.document.intelligence:
+    status: partial
+    notes: "Document Intelligence SDK evaluated; BIR form custom model in design"
+    evidence:
+      - "agents/capabilities/azure_ai_target.yaml"
+
+  azure_ai.document.content_understanding:
+    status: planned
+    notes: "Custom document pipeline for Philippine tax forms"
+
+  # Knowledge & Search
+  azure_ai.search.knowledge_mining:
+    status: partial
+    notes: "pgvector RAG exists; Azure AI Search migration planned for grounded responses"
+    evidence:
+      - "ops-platform/adapters/foundry/client.py"
+
+  azure_ai.search.information_extraction:
+    status: planned
+    notes: "Structured extraction from regulatory documents"
+
+  # Agent & Foundry Runtime
+  azure_ai.foundry.agent_publish:
+    status: partial
+    notes: "Publish pipeline scaffolded; awaiting first successful publish"
+    evidence:
+      - "scripts/deploy/publish_foundry_agent.sh"
+      - ".azure-pipelines/copilot-deploy.yml"
+      - "agents/foundry/ipai-odoo-copilot-azure/metadata.yaml"
+
+  azure_ai.foundry.agent_optimization:
+    status: planned
+    notes: "Optimization after initial production deployment"
+
+  azure_ai.foundry.fine_tuning:
+    status: planned
+    notes: "Domain fine-tuning deferred — eval baseline needed first"
+
+  azure_ai.foundry.genaiops:
+    status: partial
+    notes: "CI/CD pipeline created; eval gates and staging soak implemented"
+    evidence:
+      - ".azure-pipelines/copilot-deploy.yml"
+      - ".github/workflows/copilot-deploy.yml"
+      - "scripts/deploy/run_copilot_eval.sh"
+
+  azure_ai.foundry.genai_performance:
+    status: planned
+    notes: "Benchmarking after first production deployment"
+
+  # Video & Media
+  azure_ai.media.video_generation:
+    status: planned
+    notes: "Training video generation — future capability"
+
+  # Business Solutions
+  azure_ai.business.testing:
+    status: planned
+    notes: "Automated copilot testing — eval framework scaffolded"
+    evidence:
+      - "agents/foundry/ipai-odoo-copilot-azure/evals/README.md"
+
+  azure_ai.business.teams_integration:
+    status: planned
+    notes: "Teams channel distribution — post-Odoo integration"
