@@ -1,0 +1,112 @@
+{
+  "version": "1.0",
+  "updated": "2026-03-15",
+  "description": "Machine-readable index for agent skill discovery. Agents query this first, then lazy-load the full skill MD only when needed.",
+  "skills": [
+    {
+      "id": "agentic-sdlc-msft-pattern",
+      "path": "skills/sdlc/agentic-sdlc-msft-pattern.md",
+      "tags": ["sdlc", "spec-kit", "coding-agent", "sre", "ci-cd"],
+      "tier": "architecture",
+      "source_url": "https://techcommunity.microsoft.com/blog/appsonazureblog/an-ai-led-sdlc-building-an-end-to-end-agentic-software-development-lifecycle-wit/4491896",
+      "applies_to_repos": ["agents", ".github", "infra", "automations"],
+      "last_validated": "2026-03-15"
+    },
+    {
+      "id": "spec-driven-development",
+      "path": "skills/sdlc/spec-driven-development.md",
+      "tags": ["sdlc", "spec", "requirements", "task-breakdown"],
+      "tier": "architecture",
+      "applies_to_repos": ["agents", "ops-platform"],
+      "last_validated": "2026-03-15"
+    },
+    {
+      "id": "sre-feedback-loop",
+      "path": "skills/sdlc/sre-feedback-loop.md",
+      "tags": ["sdlc", "sre", "day-2", "incident", "observability"],
+      "tier": "architecture",
+      "applies_to_repos": ["agents", "automations", ".github"],
+      "last_validated": "2026-03-15"
+    },
+    {
+      "id": "azure-foundry-hosted-agents",
+      "path": "skills/azure/azure-foundry-hosted-agents.md",
+      "tags": ["azure", "foundry", "hosted-agents", "vs-code", "otlp"],
+      "tier": "infrastructure",
+      "source_url": "https://learn.microsoft.com/en-us/azure/foundry/agents/how-to/vs-code-agents-workflow-pro-code",
+      "applies_to_repos": ["agents", "infra"],
+      "last_validated": "2026-03-15"
+    },
+    {
+      "id": "microsoft-agent-framework",
+      "path": "skills/azure/microsoft-agent-framework.md",
+      "tags": ["azure", "agent-framework", "multi-agent", "graph-workflows", "devui"],
+      "tier": "architecture",
+      "source_url": "https://github.com/microsoft/agent-framework",
+      "applies_to_repos": ["agents", "ops-platform"],
+      "last_validated": "2026-03-15"
+    },
+    {
+      "id": "fal-ai-platform",
+      "path": "skills/inference/fal-ai-platform.md",
+      "tags": ["inference", "gpu", "generative-media", "fal", "streaming"],
+      "tier": "integration",
+      "source_url": "https://fal.ai/docs",
+      "external_api": "https://fal.ai",
+      "secrets_required": ["FAL_KEY"],
+      "applies_to_repos": ["agents", "ops-platform", "lakehouse"],
+      "last_validated": "2026-03-15"
+    },
+    {
+      "id": "azure-pipelines",
+      "path": "skills/ci-cd/azure-pipelines.md",
+      "tags": ["ci-cd", "azure-devops", "pipelines", "deterministic"],
+      "tier": "infrastructure",
+      "source_url": "https://learn.microsoft.com/en-us/azure/devops/pipelines/",
+      "applies_to_repos": [".github", "infra", "automations"],
+      "last_validated": "2026-03-15"
+    },
+    {
+      "id": "databricks-platform-overview",
+      "path": "skills/platform/databricks-platform-overview.md",
+      "tags": ["databricks", "lakehouse", "unity-catalog", "lakebase", "ai-bi"],
+      "tier": "architecture",
+      "applies_to_repos": ["lakehouse", "agents", "ops-platform"],
+      "last_validated": "2026-03-15"
+    },
+    {
+      "id": "databricks-financial-services",
+      "path": "skills/industries/financial-services.md",
+      "tags": ["finance", "bir", "compliance", "tbwa-smp", "reporting"],
+      "tier": "domain",
+      "client_context": ["TBWA\\SMP"],
+      "applies_to_repos": ["lakehouse", "agents"],
+      "last_validated": "2026-03-15"
+    },
+    {
+      "id": "databricks-marketing-retail-media",
+      "path": "skills/industries/marketing-retail-media.md",
+      "tags": ["marketing", "retail", "cdp", "audience", "personalization", "media"],
+      "tier": "domain",
+      "applies_to_repos": ["lakehouse", "agents"],
+      "last_validated": "2026-03-15"
+    },
+    {
+      "id": "databricks-apps",
+      "path": "skills/platform/databricks-apps.md",
+      "tags": ["apps", "streamlit", "internal-tools", "sso"],
+      "tier": "product",
+      "decision_pending": "adr-001-bi-tool-selection",
+      "applies_to_repos": ["lakehouse", "web", "ops-platform"],
+      "last_validated": "2026-03-15"
+    },
+    {
+      "id": "databricks-data-engineering",
+      "path": "skills/platform/data-engineering.md",
+      "tags": ["dlt", "medallion", "lakeflow", "federation", "streaming"],
+      "tier": "engineering",
+      "applies_to_repos": ["lakehouse", "automations"],
+      "last_validated": "2026-03-15"
+    }
+  ]
+}
