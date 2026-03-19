@@ -1,3 +1,5 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_ipai_copilot_audit_user,access.ipai.copilot.audit.user,model_ipai_copilot_audit,base.group_user,1,0,0,0
-access_ipai_copilot_audit_admin,access.ipai.copilot.audit.admin,model_ipai_copilot_audit,base.group_system,1,1,1,1
+access_copilot_session_user,ipai.copilot.session.user,model_ipai_copilot_session,base.group_user,1,1,1,0
+access_copilot_message_user,ipai.copilot.message.user,model_ipai_copilot_message,base.group_user,1,1,1,0
+access_copilot_audit_manager,ipai.copilot.audit.manager,model_ipai_copilot_audit,account.group_account_manager,1,0,0,0
+access_copilot_audit_system,ipai.copilot.audit.system,model_ipai_copilot_audit,base.group_system,1,1,1,0

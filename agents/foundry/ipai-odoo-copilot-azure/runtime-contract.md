@@ -1,30 +1,77 @@
-# Runtime Contract
+# Runtime Contract — ipai-odoo-copilot-azure
 
-## Canonical runtime
+## Endpoint
 
-Microsoft Foundry Agent Application.
+The published Agent Application exposes a stable endpoint consumed via
+the Azure AI Foundry Responses API.
 
-## Publish contract
+## Request Format
 
-1. Save version in Foundry
-2. Trace
-3. Evaluate
-4. Publish as Agent Application
-5. Consume stable endpoint through backend adapter only
+The backend adapter sends requests with the following context envelope:
 
-## Allowed production modes
+```json
+{
+  "user_id": "<odoo_user_id>",
+  "session_id": "<session_uuid>",
+  "environment": "staging|production",
+  "mode": "PROD-ADVISORY|PROD-CONFIRMED",
+  "locale": "en_PH",
+  "context": {
+    "current_model": "<odoo.model.name>",
+    "current_record_id": "<record_id|null>",
+    "company_id": "<company_id>",
+    "user_groups": ["group_account_manager", "..."]
+  },
+  "message": "<user_query>"
+}
+```
 
-- PROD-ADVISORY
-- PROD-ACTION
+## Response Contract
 
-## Default
+The agent returns:
 
-PROD-ADVISORY
+```json
+{
+  "reply": "<markdown_formatted_response>",
+  "sources": ["<source_reference>", "..."],
+  "suggested_actions": [
+    {
+      "type": "navigate|draft|action",
+      "label": "<button_label>",
+      "payload": {}
+    }
+  ],
+  "mode_used": "advisory|execution_design|execution_action|escalation",
+  "requires_confirmation": false
+}
+```
 
-## PROD-ACTION requirements
+## Write Action Flow
 
-- explicit user confirmation
-- target object identifier
-- change summary
-- audit event written
-- rollback/recovery note where applicable
+1. User requests a write action.
+2. Agent responds with `requires_confirmation: true` and a draft payload.
+3. Backend adapter presents confirmation UI to the user.
+4. User confirms → backend sends confirmed action request.
+5. Agent executes via Execution Action mode.
+6. Backend logs audit event.
+
+## Rate Limits
+
+- Max 60 requests per user per minute.
+- Max 500 requests per company per minute.
+- Requests exceeding limits receive HTTP 429 with retry-after header.
+
+## Timeouts
+
+- Backend adapter timeout: 30 seconds.
+- If the agent does not respond within 30 seconds, return a graceful
+  fallback message to the user.
+
+## Error Handling
+
+| Scenario | Behavior |
+|----------|----------|
+| Agent timeout | Return fallback message, log incident |
+| Agent error | Return generic error, log full trace |
+| Auth failure | Return 401, do not retry |
+| Rate limited | Return 429 with retry-after |

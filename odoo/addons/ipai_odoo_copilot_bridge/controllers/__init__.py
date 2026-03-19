@@ -1,1 +1,2 @@
-from . import main
+# -*- coding: utf-8 -*-
+from . import copilot_controller
