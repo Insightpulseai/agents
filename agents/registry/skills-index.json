@@ -107,6 +107,70 @@
       "tier": "engineering",
       "applies_to_repos": ["lakehouse", "automations"],
       "last_validated": "2026-03-15"
+    },
+    {
+      "id": "social-content-strategy",
+      "path": "agents/skills/social/content_strategy/SKILL.md",
+      "tags": ["social", "content-strategy", "planning", "pillars"],
+      "tier": "domain",
+      "applies_to_repos": ["agents"],
+      "last_validated": "2026-03-30"
+    },
+    {
+      "id": "social-caption-writing",
+      "path": "agents/skills/social/caption_writing/SKILL.md",
+      "tags": ["social", "copywriting", "captions", "platform-native"],
+      "tier": "domain",
+      "applies_to_repos": ["agents"],
+      "last_validated": "2026-03-30"
+    },
+    {
+      "id": "social-campaign-planning",
+      "path": "agents/skills/social/campaign_planning/SKILL.md",
+      "tags": ["social", "campaign", "multi-platform", "timeline"],
+      "tier": "domain",
+      "applies_to_repos": ["agents"],
+      "last_validated": "2026-03-30"
+    },
+    {
+      "id": "social-content-calendar",
+      "path": "agents/skills/social/content_calendar/SKILL.md",
+      "tags": ["social", "calendar", "scheduling", "cadence"],
+      "tier": "domain",
+      "applies_to_repos": ["agents"],
+      "last_validated": "2026-03-30"
+    },
+    {
+      "id": "social-platform-adaptation",
+      "path": "agents/skills/social/platform_adaptation/SKILL.md",
+      "tags": ["social", "platform", "adaptation", "cross-platform"],
+      "tier": "domain",
+      "applies_to_repos": ["agents"],
+      "last_validated": "2026-03-30"
+    },
+    {
+      "id": "social-brand-voice-enforcement",
+      "path": "agents/skills/social/brand_voice_enforcement/SKILL.md",
+      "tags": ["social", "brand", "voice", "enforcement", "compliance"],
+      "tier": "domain",
+      "applies_to_repos": ["agents"],
+      "last_validated": "2026-03-30"
+    },
+    {
+      "id": "social-publish-handoff",
+      "path": "agents/skills/social/publish_handoff/SKILL.md",
+      "tags": ["social", "publish", "handoff", "automation"],
+      "tier": "domain",
+      "applies_to_repos": ["agents", "automations"],
+      "last_validated": "2026-03-30"
+    },
+    {
+      "id": "social-performance-review",
+      "path": "agents/skills/social/performance_review/SKILL.md",
+      "tags": ["social", "analytics", "performance", "retrospective"],
+      "tier": "domain",
+      "applies_to_repos": ["agents"],
+      "last_validated": "2026-03-30"
     }
   ]
 }

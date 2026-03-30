@@ -1,0 +1,136 @@
+# SSOT: Social Media Manager — Persona Map
+# Single source of truth for persona → skills → judges → evals mapping
+
+version: "1.0.0"
+persona_id: persona_social_media_manager
+agent_id: agent_008
+agent_ref: agents/SocialMediaManager.SKILL.md
+status: active
+
+persona:
+  path: agents/personas/social_media_manager.md
+  description: "Senior social media manager persona with multi-platform expertise"
+
+skills:
+  - id: social.content_strategy
+    path: agents/skills/social/content_strategy/SKILL.md
+    description: "Content pillars, themes, and strategic planning"
+  - id: social.caption_writing
+    path: agents/skills/social/caption_writing/SKILL.md
+    description: "Platform-native caption and copy writing"
+  - id: social.campaign_planning
+    path: agents/skills/social/campaign_planning/SKILL.md
+    description: "Multi-platform campaign timeline and brief generation"
+  - id: social.content_calendar
+    path: agents/skills/social/content_calendar/SKILL.md
+    description: "Content scheduling, cadence, and mix management"
+  - id: social.platform_adaptation
+    path: agents/skills/social/platform_adaptation/SKILL.md
+    description: "Cross-platform content transformation"
+  - id: social.brand_voice_enforcement
+    path: agents/skills/social/brand_voice_enforcement/SKILL.md
+    description: "Brand voice validation and terminology enforcement"
+  - id: social.publish_handoff
+    path: agents/skills/social/publish_handoff/SKILL.md
+    description: "Content packaging and handoff to automations"
+  - id: social.performance_review
+    path: agents/skills/social/performance_review/SKILL.md
+    description: "Engagement analytics and strategy recommendations"
+
+judges:
+  - id: judge.social.brand_consistency
+    path: agents/judges/social/brand_consistency_judge.md
+    gate_type: hard
+    description: "Brand voice, tone, and terminology alignment"
+  - id: judge.social.platform_fit
+    path: agents/judges/social/platform_fit_judge.md
+    gate_type: hard
+    description: "Platform-specific format and constraint validation"
+  - id: judge.social.compliance
+    path: agents/judges/social/compliance_judge.md
+    gate_type: hard
+    description: "Legal, regulatory, and policy compliance"
+  - id: judge.social.content_quality
+    path: agents/judges/social/content_quality_judge.md
+    gate_type: soft
+    description: "Writing quality, CTA strength, and engagement potential"
+  - id: judge.social.publish_readiness
+    path: agents/judges/social/publish_readiness_judge.md
+    gate_type: hard
+    description: "Final pre-publish gate — completeness and approval validation"
+
+evals:
+  rubric: agents/evals/social/rubric.yaml
+  thresholds: agents/evals/social/thresholds.yaml
+  fixtures: agents/evals/social/fixtures/
+  cases:
+    - id: brand_aligned_post
+      path: agents/evals/social/cases/brand_aligned_post/case.yaml
+      tags: [brand-voice, linkedin, smoke]
+    - id: off_brand_rejection
+      path: agents/evals/social/cases/off_brand_rejection/case.yaml
+      tags: [brand-voice, judge, negative-test]
+    - id: multi_platform_adaptation
+      path: agents/evals/social/cases/multi_platform_adaptation/case.yaml
+      tags: [platform-adaptation, multi-platform]
+    - id: weak_cta_detection
+      path: agents/evals/social/cases/weak_cta_detection/case.yaml
+      tags: [content-quality, judge, cta]
+    - id: compliance_violation
+      path: agents/evals/social/cases/compliance_violation/case.yaml
+      tags: [compliance, judge, safety]
+
+schemas:
+  - id: social.content_item
+    path: agents/schemas/social/content_item.yaml
+  - id: social.publish_handoff
+    path: agents/schemas/social/publish_handoff.yaml
+  - id: social.campaign_plan
+    path: agents/schemas/social/campaign_plan.yaml
+
+downstream_surfaces:
+  automations:
+    purpose: "Scheduling, posting, channel connectors"
+    handoff_schema: social.publish_handoff
+  ugc_mediaops_kit:
+    purpose: "Creative asset generation, finishing, export"
+    handoff_type: creative_brief
+  agent_platform:
+    purpose: "Runtime orchestration (only if deployed as worker)"
+  platform:
+    purpose: "Operator approval queue, campaign dashboard"
+
+operating_model:
+  type: single_operator_plus_ai
+  description: |
+    One human operator sets strategy, brand voice, and campaign objectives.
+    The agent handles volume through content atomization, variant generation,
+    judge-gated quality control, and performance feedback loops.
+    Replaces ~6 FTE content team with 1 operator + agent.
+  inspiration: "Lean AI-native marketing teams (e.g., Anthropic's growth model)"
+
+  key_patterns:
+    content_atomization:
+      description: "Pillar content → atomic units → platform recombination"
+      never: "Never transform directly between platforms"
+    variant_generation:
+      description: "3-5 variants per post, vary one dimension at a time"
+      dimensions: [hook, tone, cta, length, format]
+    confidence_routing:
+      auto_approve: "composite score ≥ 0.85"
+      human_review: "composite score 0.65-0.84"
+      reject: "composite score < 0.65 or any hard-gate failure"
+    feedback_loop:
+      description: "Top-performing posts become few-shot examples for next generation"
+      data: "PostPerformanceRecord with structured metadata"
+      frequency: "Continuous — updated after each performance review cycle"
+    few_shot_calibration:
+      description: "Judge scoring calibrated with scored examples per band"
+      human_loop: "Monthly human calibration to detect scoring drift"
+
+decision_rule: |
+  If it defines how the social media manager thinks, writes, reviews, or decides → agents
+  If it runs as software → agent-platform
+  If it posts/schedules/syncs → automations
+  If it needs an operator dashboard → platform
+  If it finishes media assets → ugc-mediaops-kit

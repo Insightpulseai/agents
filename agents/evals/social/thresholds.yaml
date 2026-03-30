@@ -1,0 +1,80 @@
+# Social Media Manager — Evaluation Thresholds
+# Defines minimum scores for CI gates
+
+version: "1.0.0"
+description: "Social Media Manager Agent Evaluation Thresholds"
+
+thresholds:
+  brand_consistency: 0.85
+  platform_fit: 0.90
+  content_quality: 0.75
+  compliance: 1.00
+  campaign_alignment: 0.75
+
+ci_gates:
+  hard:
+    - brand_consistency
+    - platform_fit
+    - compliance
+  soft:
+    - content_quality
+    - campaign_alignment
+
+pass_rate:
+  minimum: 0.85
+
+regression:
+  enabled: true
+  baseline_path: "evals/social/baseline.json"
+  max_regression: 0.05
+
+judge:
+  model: "claude-sonnet-4-6"
+  fallback: "rule-based"
+  timeout_seconds: 30
+  retry_count: 3
+
+scoring:
+  brand_consistency:
+    weight: 0.25
+    description: "Brand voice and identity alignment"
+    components:
+      - tone_alignment
+      - terminology_compliance
+      - do_not_say_check
+      - messaging_alignment
+
+  platform_fit:
+    weight: 0.20
+    description: "Platform-specific format and constraint compliance"
+    components:
+      - character_limit
+      - hashtag_compliance
+      - media_requirements
+      - cta_format
+
+  content_quality:
+    weight: 0.20
+    description: "Writing quality, CTA strength, and engagement potential"
+    components:
+      - clarity
+      - cta_strength
+      - hook_effectiveness
+      - value_density
+
+  compliance:
+    weight: 0.20
+    description: "Legal, regulatory, and policy compliance"
+    components:
+      - claims_verification
+      - disclosure_completeness
+      - pii_absence
+      - regulated_topic_handling
+
+  campaign_alignment:
+    weight: 0.15
+    description: "Alignment with campaign objectives and funnel stage"
+    components:
+      - objective_match
+      - messaging_consistency
+      - funnel_stage_cta

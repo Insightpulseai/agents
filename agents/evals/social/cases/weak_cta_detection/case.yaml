@@ -1,0 +1,37 @@
+# Eval Case: Weak CTA Detection
+# Tests that content quality judge correctly flags weak or missing CTAs
+
+id: weak_cta_detection
+name: "Weak CTA Detection"
+description: "Verify that content quality judge flags posts with vague, buried, or missing calls to action"
+tags: [social, content-quality, judge, cta]
+
+input:
+  request_type: brand_review
+  brand_context:
+    brand_name: "Acme Analytics"
+    voice_guidelines_ref: "evals/social/fixtures/acme_brand_voice.yaml"
+    do_not_say: []
+  content_items_to_review:
+    - id: post_no_cta
+      copy: "Data analytics is transforming how businesses operate. The future is exciting."
+      platform: linkedin
+      expected_cta_score: 0.0
+    - id: post_vague_cta
+      copy: "We're launching something new. Stay tuned for more updates!"
+      platform: linkedin
+      expected_cta_score: 0.2
+    - id: post_strong_cta
+      copy: "We analyzed 10,000 dashboards to find what drives adoption. Download the free report → [link]"
+      platform: linkedin
+      expected_cta_score: 0.85
+
+expected_behavior:
+  - "post_no_cta: CTA score ≤ 0.1"
+  - "post_vague_cta: CTA score ≤ 0.3, suggestion to add specific action"
+  - "post_strong_cta: CTA score ≥ 0.8"
+  - "Improvement suggestions provided for weak CTAs"
+
+quality_requirements:
+  content_quality_judge:
+    cta_scoring_accuracy: 0.80

@@ -1,0 +1,59 @@
+# Brand Voice Fixture: Acme Analytics
+# Used by eval cases as reference brand context
+
+brand_name: "Acme Analytics"
+tagline: "Decisions, accelerated."
+
+voice_attributes:
+  primary:
+    - professional
+    - authoritative
+    - clear
+  secondary:
+    - approachable
+    - forward-looking
+    - confident
+
+tone_parameters:
+  formality: 0.75          # 0 = very casual, 1 = very formal
+  warmth: 0.55             # 0 = cold/corporate, 1 = very warm
+  urgency: 0.40            # 0 = relaxed, 1 = high urgency
+  technical_depth: 0.60    # 0 = layperson, 1 = deeply technical
+
+do_not_say:
+  - "cheap"
+  - "cheapest"
+  - "guarantee"
+  - "guaranteed"
+  - "best in class"
+  - "synergy"
+  - "paradigm shift"
+  - "disrupt"
+  - "game-changer"
+  - "revolutionary"
+  - "world-class"
+
+preferred_terminology:
+  cost-effective: ["affordable", "budget-friendly", "cheap"]
+  insights: ["data points", "numbers"]
+  team collaboration: ["synergy", "alignment"]
+  competitive advantage: ["edge", "moat"]
+  data-driven: ["data-centric", "analytics-first"]
+
+brand_pillars:
+  - "Data clarity for faster decisions"
+  - "Team collaboration through shared insights"
+  - "Enterprise reliability with startup agility"
+  - "Customer success as a growth engine"
+
+content_guidelines:
+  always:
+    - "Lead with the insight, not the product"
+    - "Use specific numbers over vague claims"
+    - "Credit sources for statistics"
+    - "Write for the reader's benefit, not self-promotion"
+  never:
+    - "Make unsubstantiated performance claims"
+    - "Disparage competitors by name"
+    - "Use jargon without context"
+    - "Promise specific ROI without disclaimer"

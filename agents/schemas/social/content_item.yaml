@@ -1,0 +1,108 @@
+# Schema: Social Media Content Item
+# Canonical schema for a single piece of social media content
+
+version: "1.0.0"
+schema_id: social.content_item
+
+fields:
+  id:
+    type: string
+    required: true
+    description: "Unique content item identifier"
+    format: "uuid"
+
+  platform:
+    type: string
+    required: true
+    enum: [linkedin, x, instagram, facebook, tiktok]
+    description: "Target social media platform"
+
+  copy:
+    type: string
+    required: true
+    description: "Post caption/body text"
+    validation:
+      max_length_by_platform:
+        linkedin: 3000
+        x: 280
+        instagram: 2200
+        facebook: 63206
+        tiktok: 4000
+
+  hashtags:
+    type: array
+    items: string
+    required: true
+    description: "Hashtag list (without # prefix)"
+    validation:
+      max_count_by_platform:
+        linkedin: 5
+        x: 2
+        instagram: 30
+        facebook: 3
+        tiktok: 5
+
+  cta:
+    type: string
+    required: true
+    description: "Call to action text"
+
+  media_refs:
+    type: array
+    items: string
+    required: false
+    description: "URIs to attached media assets"
+
+  media_brief:
+    type: string
+    required: false
+    description: "Creative brief if media not yet produced"
+
+  campaign_id:
+    type: string
+    required: false
+    description: "Associated campaign identifier"
+
+  content_pillar:
+    type: string
+    required: false
+    enum: [educational, inspirational, promotional, community, cultural]
+    description: "Content pillar classification"
+
+  funnel_stage:
+    type: string
+    required: false
+    enum: [awareness, consideration, conversion, retention]
+    description: "Marketing funnel stage"
+
+  scheduled_time:
+    type: string
+    required: false
+    format: "iso8601"
+    description: "Planned publish time"
+
+  timezone:
+    type: string
+    required: false
+    description: "Timezone for scheduled_time (IANA format)"
+
+  thread_position:
+    type: integer
+    required: false
+    description: "Position in thread (1-indexed, null if not a thread)"
+
+  status:
+    type: string
+    required: true
+    enum: [draft, review, approved, handoff_ready, published]
+    description: "Content lifecycle status"
+
+  quality_score:
+    type: float
+    required: false
+    description: "Composite quality score from content_quality_judge"
+
+  brand_alignment_score:
+    type: float
+    required: false
+    description: "Composite score from brand_consistency_judge"

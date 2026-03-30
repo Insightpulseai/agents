@@ -1,0 +1,97 @@
+# Schema: Publish Handoff Payload
+# Canonical schema for content handoff to automations surface
+
+version: "1.0.0"
+schema_id: social.publish_handoff
+
+fields:
+  handoff_id:
+    type: string
+    required: true
+    format: "uuid"
+    description: "Unique handoff tracking identifier"
+
+  timestamp:
+    type: string
+    required: true
+    format: "iso8601"
+    description: "Handoff creation timestamp"
+
+  content_id:
+    type: string
+    required: true
+    description: "Reference to content item being handed off"
+
+  campaign_id:
+    type: string
+    required: false
+    description: "Associated campaign identifier"
+
+  platform:
+    type: string
+    required: true
+    enum: [linkedin, x, instagram, facebook, tiktok]
+
+  copy:
+    type: string
+    required: true
+    description: "Final approved copy text"
+
+  hashtags:
+    type: array
+    items: string
+    required: true
+
+  cta:
+    type: string
+    required: true
+
+  media_refs:
+    type: array
+    items: string
+    required: true
+    description: "URIs to publish-ready media assets (empty array if no media)"
+
+  scheduled_time:
+    type: string
+    required: true
+    format: "iso8601"
+    description: "Target publish time"
+
+  timezone:
+    type: string
+    required: true
+    description: "IANA timezone for scheduled_time"
+
+  approval_chain:
+    type: object
+    required: true
+    fields:
+      brand_consistency_judge:
+        type: string
+        enum: [pass, fail]
+      compliance_judge:
+        type: string
+        enum: [pass, fail]
+      platform_fit_judge:
+        type: string
+        enum: [pass, fail]
+      content_quality_judge:
+        type: string
+        enum: [pass, fail, advisory]
+      publish_readiness_judge:
+        type: string
+        enum: [pass, fail]
+      operator_approval:
+        type: string
+        enum: [approved, not_required]
+
+  status:
+    type: string
+    required: true
+    enum: [ready, blocked]
+
+  blocked_reason:
+    type: string
+    required: false
+    description: "Reason for blocked status, null if ready"

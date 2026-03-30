@@ -1,0 +1,42 @@
+# Eval Case: Multi-Platform Adaptation
+# Tests that platform adaptation produces distinct, native content per platform
+
+id: multi_platform_adaptation
+name: "Multi-Platform Content Adaptation"
+description: "Adapt a single content concept across LinkedIn, X, and Instagram with platform-native formatting"
+tags: [social, platform-adaptation, multi-platform]
+
+input:
+  request_type: platform_adaptation
+  brand_context:
+    brand_name: "Acme Analytics"
+    voice_guidelines_ref: "evals/social/fixtures/acme_brand_voice.yaml"
+    do_not_say: ["cheap", "guarantee", "best in class"]
+  platform_targets:
+    - platform: linkedin
+    - platform: x
+    - platform: instagram
+  content_input:
+    topic: "How data-driven teams make better decisions"
+    key_messages:
+      - "67% of data-driven teams outperform competitors"
+      - "Dashboard adoption leads to faster decision cycles"
+      - "Custom reports reduce meeting time by 30%"
+    source_material: "Long-form blog post on data-driven decision making (1500 words)"
+
+expected_behavior:
+  - "LinkedIn variant is long-form (500-1500 chars), professional tone"
+  - "X variant is under 280 chars, punchy and direct"
+  - "Instagram variant assumes visual-first, caption supports image"
+  - "Each variant has platform-appropriate hashtag count"
+  - "CTAs differ by platform (link in post vs. link in bio)"
+  - "No two variants are identical in copy"
+
+quality_requirements:
+  platform_fit_judge:
+    min_score: 0.90
+    per_platform: true
+  brand_consistency_judge:
+    min_score: 0.85
+  content_quality_judge:
+    min_score: 0.70
