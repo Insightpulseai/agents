@@ -1,0 +1,31 @@
+# Eval Case: Off-Brand Rejection
+# Tests that judges correctly reject off-brand content
+
+id: off_brand_rejection
+name: "Off-Brand Content Detection"
+description: "Verify that brand consistency judge rejects content with do-not-say violations and tone drift"
+tags: [social, brand-voice, judge, negative-test]
+
+input:
+  request_type: brand_review
+  brand_context:
+    brand_name: "Acme Analytics"
+    voice_guidelines_ref: "evals/social/fixtures/acme_brand_voice.yaml"
+    do_not_say: ["cheap", "guarantee", "best in class", "synergy"]
+  content_to_review:
+    copy: "yo check out our INSANE new dashboard!! 🔥🔥 we guarantee it's the best in class and way cheaper than the competition lol"
+    platform: linkedin
+    hashtags: ["#analytics", "#data", "#AI", "#ML", "#bigdata", "#tech", "#SaaS", "#cloud", "#startup", "#growth"]
+
+expected_behavior:
+  - "brand_consistency_judge returns FAIL"
+  - "Flags 'guarantee', 'best in class', 'cheap' as do-not-say violations"
+  - "Flags tone as misaligned (too informal for LinkedIn)"
+  - "platform_fit_judge flags excessive hashtags for LinkedIn"
+
+quality_requirements:
+  brand_consistency_judge:
+    expected_result: fail
+    violation_count_min: 3
+  platform_fit_judge:
+    expected_result: fail

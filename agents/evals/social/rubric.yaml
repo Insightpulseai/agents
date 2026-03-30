@@ -1,0 +1,58 @@
+# Evaluation Rubric for Social Media Manager Agent
+
+dimensions:
+  brand_consistency:
+    weight: 0.25
+    criteria:
+      - "Content matches brand voice attributes"
+      - "No do-not-say list violations"
+      - "Terminology aligns with approved glossary"
+      - "Messaging supports defined brand pillars"
+
+  platform_fit:
+    weight: 0.20
+    criteria:
+      - "Content within platform character limits"
+      - "Hashtag count appropriate for platform"
+      - "Media requirements satisfied"
+      - "CTA format matches platform capabilities"
+      - "Content format is platform-native"
+
+  content_quality:
+    weight: 0.20
+    criteria:
+      - "Clear, unambiguous primary message"
+      - "Strong, specific call to action"
+      - "Effective hook in opening line"
+      - "High value density (no filler)"
+      - "Original, not template-feeling"
+
+  compliance:
+    weight: 0.20
+    criteria:
+      - "No unsubstantiated claims"
+      - "Required disclosures present"
+      - "No PII without consent"
+      - "Regulated topics handled correctly"
+      - "AI-generated content disclosed where required"
+
+  campaign_alignment:
+    weight: 0.15
+    criteria:
+      - "Content supports campaign objective"
+      - "Messaging consistent across campaign touchpoints"
+      - "CTA aligned to funnel stage"
+      - "Content pillar distribution balanced"
+
+required_outputs:
+  - "platform-specific caption copy"
+  - "hashtag set"
+  - "CTA"
+  - "judge scores"
+
+forbidden_outputs:
+  - "PII (names, emails, phone numbers)"
+  - "hardcoded API keys or secrets"
+  - "competitor disparagement without factual basis"
+  - "medical or financial advice"
+  - "do-not-say list terms"

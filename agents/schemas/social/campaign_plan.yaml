@@ -1,0 +1,107 @@
+# Schema: Campaign Plan
+# Canonical schema for a social media campaign plan
+
+version: "1.0.0"
+schema_id: social.campaign_plan
+
+fields:
+  campaign_id:
+    type: string
+    required: true
+    format: "uuid"
+    description: "Unique campaign identifier"
+
+  campaign_name:
+    type: string
+    required: true
+
+  objective:
+    type: string
+    required: true
+    enum: [awareness, engagement, traffic, conversion, retention]
+
+  start_date:
+    type: string
+    required: true
+    format: "iso8601"
+
+  end_date:
+    type: string
+    required: true
+    format: "iso8601"
+
+  platforms:
+    type: array
+    items: string
+    required: true
+    description: "Target platforms for the campaign"
+
+  phases:
+    type: array
+    required: true
+    items:
+      type: object
+      fields:
+        phase_name:
+          type: string
+          enum: [tease, launch, sustain, close]
+        start_date:
+          type: string
+          format: "iso8601"
+        end_date:
+          type: string
+          format: "iso8601"
+        content_types:
+          type: array
+          items: string
+        kpi_targets:
+          type: object
+          description: "KPI name → target value"
+
+  content_pillars:
+    type: array
+    items: string
+    required: true
+
+  kpi_targets:
+    type: object
+    required: true
+    description: "Campaign-level KPI name → target value"
+
+  content_briefs:
+    type: array
+    required: false
+    items:
+      type: object
+      fields:
+        brief_id:
+          type: string
+        platform:
+          type: string
+        content_type:
+          type: string
+        key_messages:
+          type: array
+          items: string
+        media_format:
+          type: string
+          enum: [image, video, carousel, document, text_only]
+
+  messaging_matrix:
+    type: object
+    required: false
+    description: "Platform → key message mapping for cross-channel consistency"
+
+  approval_checkpoints:
+    type: array
+    required: false
+    items:
+      type: object
+      fields:
+        checkpoint_name:
+          type: string
+        date:
+          type: string
+          format: "iso8601"
+        approver:
+          type: string

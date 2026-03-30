@@ -1,0 +1,37 @@
+# Eval Case: Brand-Aligned Post
+# Tests that the agent produces content matching brand voice guidelines
+
+id: brand_aligned_post
+name: "Brand-Aligned LinkedIn Post"
+description: "Generate a LinkedIn post for a B2B SaaS brand that matches professional, authoritative voice guidelines"
+tags: [social, brand-voice, linkedin, smoke]
+
+input:
+  request_type: caption_writing
+  brand_context:
+    brand_name: "Acme Analytics"
+    voice_guidelines_ref: "evals/social/fixtures/acme_brand_voice.yaml"
+    do_not_say: ["cheap", "guarantee", "best in class", "synergy"]
+  platform_targets:
+    - platform: linkedin
+  content_input:
+    topic: "Q1 product update — new dashboard features"
+    key_messages:
+      - "Real-time data visualization"
+      - "Custom report builder"
+      - "Team collaboration tools"
+
+expected_behavior:
+  - "Content uses professional, authoritative tone"
+  - "No do-not-say terms present"
+  - "Post within 3000 character limit"
+  - "Contains clear CTA"
+  - "3-5 hashtags, professionally relevant"
+
+quality_requirements:
+  brand_consistency_judge:
+    min_score: 0.85
+  platform_fit_judge:
+    min_score: 0.90
+  content_quality_judge:
+    min_score: 0.75
