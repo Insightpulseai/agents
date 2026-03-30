@@ -88,3 +88,52 @@ composite: 0.31
 suggestions: ["Replace vague CTA with specific action", "Add concrete value — what does the feature do?", "Remove 'excited to announce' cliché hook"]
 result: FAIL — rewrite recommended
 ```
+
+## Few-Shot Calibration
+
+To maintain scoring accuracy, the content quality judge uses **calibrated few-shot examples**:
+
+```yaml
+calibration:
+  method: few_shot
+  examples_per_score_band: 2
+  score_bands: [0.0-0.3, 0.3-0.6, 0.6-0.8, 0.8-1.0]
+
+  calibration_set:
+    - score: 0.95
+      platform: linkedin
+      copy: "We analyzed 10,000 social posts. The #1 predictor of engagement? Not hashtags. Not timing. It's the first 7 words. Here's the framework we use →"
+      rationale: "Strong stat hook, curiosity gap, specific CTA, high value density"
+
+    - score: 0.72
+      platform: linkedin
+      copy: "AI is transforming marketing. Here are 5 ways to stay ahead of the curve in 2026."
+      rationale: "Decent structure but generic hook, overused format, vague promise"
+
+    - score: 0.35
+      platform: linkedin
+      copy: "Excited to announce we've been named a leader! Thank you to our amazing team and customers."
+      rationale: "Cliché hook, self-congratulatory, no value for reader, no CTA"
+
+    - score: 0.10
+      platform: linkedin
+      copy: "Check out our website."
+      rationale: "No hook, no value, no context, minimal effort"
+
+  human_calibration_loop:
+    frequency: "Monthly"
+    process: "Sample 20 scored posts, have human rate same posts, compare. Adjust rubric weights if drift > 0.15"
+```
+
+## Ensemble Scoring
+
+For high-stakes content (campaign launches, sensitive topics), use ensemble judging:
+
+```yaml
+ensemble:
+  enabled_when: "campaign.objective == 'conversion' OR content.escalation_flag == true"
+  judge_calls: 3
+  aggregation: "median"
+  variance_threshold: 0.15
+  action_on_high_variance: "flag for human review"
+```

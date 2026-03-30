@@ -68,6 +68,40 @@ N+1/ [Summary + CTA]
 [Hashtags below fold]
 ```
 
+## A/B Variant Generation
+
+When `variant_config` is provided, generate multiple variants per post:
+
+```
+Input: Base message + variant_config
+Process:
+  1. Generate base version using top-performing past posts as few-shot examples
+  2. For each vary_dimension:
+     a. Create variant keeping all other dimensions constant
+     b. Only vary ONE dimension per variant (for clean A/B signal)
+  3. Score each variant with content_quality_judge
+  4. Rank by predicted engagement (informed by PostPerformanceRecord patterns)
+Output: VariantSet with recommended_variant_id
+```
+
+### Variant Dimensions
+
+| Dimension | What Changes | Example |
+|-----------|-------------|---------|
+| hook | Opening line style | Question vs. statistic vs. bold claim |
+| tone | Voice intensity | Authoritative vs. conversational vs. urgent |
+| cta | Action request | "Download now" vs. "See the data" vs. "Join the conversation" |
+| length | Copy length | Concise (50 chars) vs. standard (150) vs. long-form (500+) |
+| format | Post structure | Single post vs. thread vs. list format |
+
+### Few-Shot Example Selection
+
+When historical performance data is available:
+1. Filter `PostPerformanceRecord[]` by matching platform + content_pillar
+2. Sort by `engagement_rate_7d` descending
+3. Select top 3-5 as few-shot examples for generation context
+4. Include the full copy + metadata so the model learns patterns, not just topics
+
 ## Quality Checks
 
 - Character count within platform limit
@@ -76,3 +110,4 @@ N+1/ [Summary + CTA]
 - No do-not-say list violations
 - Hashtags relevant and not banned
 - No broken or placeholder links
+- If variants generated: each varies exactly one dimension from base

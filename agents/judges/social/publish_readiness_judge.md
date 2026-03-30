@@ -53,11 +53,58 @@ checklist:
     - auto_approved: "Allowed if all judge gates pass and no escalation flags"
 ```
 
+## Confidence-Based Routing
+
+The publish readiness judge computes a composite confidence score from all upstream judges and routes content accordingly. This is the mechanism that enables the **single-operator model** — high-confidence content flows through without human intervention.
+
+```yaml
+routing:
+  auto_approve:
+    threshold: 0.85
+    conditions:
+      - all hard-gate judges passed
+      - no compliance escalations
+      - no campaign requiring manual sign-off
+    action: "Emit to publish handoff immediately"
+
+  human_review:
+    threshold: 0.65-0.84
+    conditions:
+      - hard-gate judges passed but with soft flags
+      - content_quality_judge score below optimal
+      - first post for new campaign or brand
+    action: "Queue for operator review with judge context"
+
+  reject:
+    threshold: "<0.65"
+    conditions:
+      - any hard-gate judge failed
+      - compliance escalation required
+      - multiple soft flags accumulated
+    action: "Reject with specific feedback, trigger regeneration"
+```
+
+### Routing Signal Computation
+
+```
+composite_confidence =
+  brand_consistency_score × 0.25 +
+  compliance_score × 0.25 +
+  platform_fit_score × 0.25 +
+  content_quality_score × 0.15 +
+  checklist_completeness × 0.10
+
+If compliance_score < 1.0 → FORCE REJECT (override composite)
+If brand_consistency_score < 0.70 → FORCE REJECT (override composite)
+```
+
 ## Output
 
 ```yaml
 output:
   publish_ready: boolean
+  routing_decision: auto_approve | human_review | reject
+  composite_confidence: float
   blocking_issues: issue[]
   advisory_notes: string[]
   handoff_approved: boolean
@@ -71,14 +118,33 @@ output:
 
 ## Examples
 
-### Ready
+### Auto-Approve (score: 0.92)
 ```yaml
 judge_gates: all passed
 content: complete
 media: 1 image, specs valid
 schedule: 2026-04-01T14:00:00Z, no conflicts
-approval: auto-approved (no escalation flags)
-result: PUBLISH READY
+composite_confidence: 0.92
+routing: auto_approve
+result: PUBLISH READY — auto-approved, no human review needed
+```
+
+### Human Review (score: 0.78)
+```yaml
+judge_gates: hard gates passed
+content_quality_judge: 0.68 (below optimal, weak hook)
+composite_confidence: 0.78
+routing: human_review
+result: QUEUED FOR REVIEW — "Content quality below threshold. Hook effectiveness: 0.45. Suggest strengthening opening line."
+```
+
+### Reject (score: 0.41)
+```yaml
+judge_gates: compliance_judge=FAIL
+violation: "Unsubstantiated performance claim"
+composite_confidence: 0.41
+routing: reject
+result: REJECTED — "Compliance violation: remove unsubstantiated claim or add source citation. Regenerate with feedback."
 ```
 
 ### Blocked — Missing Media
@@ -87,10 +153,4 @@ judge_gates: all passed
 content: complete
 media: 0 refs, platform=instagram (media required)
 result: BLOCKED — "Instagram post requires media attachment. Request creative brief or attach asset."
-```
-
-### Blocked — Upstream Judge Failed
-```yaml
-judge_gates: compliance_judge=FAIL
-result: BLOCKED — "Compliance judge failed. Resolve violations before publish handoff."
 ```

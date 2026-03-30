@@ -18,18 +18,39 @@ Transforms a single content concept into platform-native variants. Adapts copy l
 ## Core Pattern
 
 ```
-Input: Source content + target platforms + brand voice + campaign context
+Input: Source content (or content atoms) + target platforms + brand voice + campaign context
 Process:
-  1. Analyze source content for key messages and hooks
-  2. For each target platform:
-     a. Apply platform character limits and format rules
-     b. Shift tone to match platform culture
-     c. Select appropriate content format (post, thread, carousel, reel script)
-     d. Adjust CTA to platform capabilities
-     e. Generate platform-specific hashtag set
-  3. Run platform_fit_judge on each variant
-Output: Platform-specific content variants with fit scores
+  1. If source is pillar content → atomize first (extract key points, quotes, stats, stories)
+  2. Select relevant atoms for each target platform (not all atoms suit all platforms)
+  3. For each target platform:
+     a. Recombine selected atoms into platform-native structure
+     b. Apply platform character limits and format rules
+     c. Shift tone to match platform culture
+     d. Select appropriate content format (post, thread, carousel, reel script)
+     e. Adjust CTA to platform capabilities
+     f. Generate platform-specific hashtag set
+  4. Run platform_fit_judge on each variant
+Output: Platform-specific content variants with fit scores and source atom references
 ```
+
+### Content Atomization (prerequisite)
+
+Never transform directly between platforms. Always go through atomic units:
+
+```
+[Pillar Content]
+    ↓
+[Content Atoms: key_points[], quotes[], statistics[], stories[], frameworks[]]
+    ↓
+[Platform Recombination]
+    ├── LinkedIn: key_point + statistic + framework → long-form professional post
+    ├── X/Twitter: statistic + bold claim → punchy thread
+    ├── Instagram: story + quote → visual caption
+    ├── Facebook: key_point + story → community discussion
+    └── TikTok: story + statistic → hook + script outline
+```
+
+Each derived post maintains `source_atoms[]` references for performance attribution back to the pillar content.
 
 ## Adaptation Matrix
 

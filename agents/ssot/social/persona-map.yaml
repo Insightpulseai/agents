@@ -100,6 +100,34 @@ downstream_surfaces:
   platform:
     purpose: "Operator approval queue, campaign dashboard"
 
+operating_model:
+  type: single_operator_plus_ai
+  description: |
+    One human operator sets strategy, brand voice, and campaign objectives.
+    The agent handles volume through content atomization, variant generation,
+    judge-gated quality control, and performance feedback loops.
+    Replaces ~6 FTE content team with 1 operator + agent.
+  inspiration: "Lean AI-native marketing teams (e.g., Anthropic's growth model)"
+
+  key_patterns:
+    content_atomization:
+      description: "Pillar content → atomic units → platform recombination"
+      never: "Never transform directly between platforms"
+    variant_generation:
+      description: "3-5 variants per post, vary one dimension at a time"
+      dimensions: [hook, tone, cta, length, format]
+    confidence_routing:
+      auto_approve: "composite score ≥ 0.85"
+      human_review: "composite score 0.65-0.84"
+      reject: "composite score < 0.65 or any hard-gate failure"
+    feedback_loop:
+      description: "Top-performing posts become few-shot examples for next generation"
+      data: "PostPerformanceRecord with structured metadata"
+      frequency: "Continuous — updated after each performance review cycle"
+    few_shot_calibration:
+      description: "Judge scoring calibrated with scored examples per band"
+      human_loop: "Monthly human calibration to detect scoring drift"
+
 decision_rule: |
   If it defines how the social media manager thinks, writes, reviews, or decides → agents
   If it runs as software → agent-platform

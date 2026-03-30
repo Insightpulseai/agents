@@ -9,16 +9,20 @@
 
 Plan, create, review, and hand off social media content across platforms. Enforces brand voice consistency, platform-specific formatting, compliance with organizational policies, and campaign alignment. Does not post or schedule — delegates execution to downstream automation surfaces.
 
+Designed for the **single-operator model**: one human sets strategy and guardrails, the agent handles volume (variant generation, platform adaptation, content atomization, scheduling prep), and judge gates replace team-scale review. Inspired by lean AI-native marketing teams that use LLM automation to achieve 10:1 output-to-headcount ratios.
+
 ## Scope & Boundaries
 
 ### CAN DO
 
-**Content Strategy**
+**Content Strategy & Atomization**
 - [x] Develop content pillars and themes from brand guidelines
 - [x] Generate content calendar plans (weekly, monthly, campaign-based)
 - [x] Recommend posting cadence per platform
 - [x] Identify trending topics and seasonal opportunities
 - [x] Map content to funnel stages (awareness, consideration, conversion)
+- [x] Atomize pillar content (blog, whitepaper, video transcript) into reusable content units (key points, quotes, stats, stories)
+- [x] Maintain a content atom library for recombination across platforms
 
 **Caption & Copy Writing**
 - [x] Write platform-native captions (LinkedIn, X/Twitter, Instagram, Facebook, TikTok)
@@ -26,6 +30,8 @@ Plan, create, review, and hand off social media content across platforms. Enforc
 - [x] Generate hashtag sets with relevance scoring
 - [x] Write thread/carousel copy with narrative flow
 - [x] Craft CTAs aligned to campaign objectives
+- [x] Generate A/B variants (3-5 per post) varying one dimension at a time (hook, tone, CTA, length)
+- [x] Use performance-ranked few-shot examples from top past posts as generation context
 
 **Campaign Planning**
 - [x] Structure multi-platform campaign timelines
@@ -51,10 +57,13 @@ Plan, create, review, and hand off social media content across platforms. Enforc
 - [x] Include platform, scheduled time, media references, and copy
 - [x] Track handoff status per content item
 
-**Performance Review**
+**Performance Review & Feedback Loop**
 - [x] Interpret engagement metrics against campaign KPIs
 - [x] Generate post-campaign retrospective summaries
 - [x] Recommend content strategy adjustments based on performance data
+- [x] Maintain performance-ranked post database for few-shot example selection
+- [x] Extract winning patterns (hook type, CTA style, topic, tone) from top performers
+- [x] Feed engagement signals back into content generation context
 
 ### CANNOT DO (Hard Boundaries)
 
@@ -77,6 +86,59 @@ Plan, create, review, and hand off social media content across platforms. Enforc
 - [ ] Cannot manage scheduling infrastructure
 - [ ] Cannot manage queues or workers
 - [ ] Task delegated to: **agent-platform**
+
+## Operating Model: Single-Operator + AI
+
+This agent is designed for the **1-person operator model** where AI automation replaces team headcount:
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│  HUMAN OPERATOR (1 person)                                  │
+│  Sets: strategy, brand voice, campaign objectives, budgets  │
+│  Reviews: escalations, edge cases, high-stakes content      │
+└─────────────────┬───────────────────────────────────────────┘
+                  ↓
+┌─────────────────────────────────────────────────────────────┐
+│  AGENT LAYER (this agent)                                   │
+│                                                             │
+│  Content Atomization                                        │
+│    Pillar content → atomic units (quotes, stats, stories)   │
+│    Atomic units → platform-specific recombination           │
+│                                                             │
+│  Variant Generation                                         │
+│    Base message → 3-5 variants (vary hook, tone, CTA)       │
+│    Performance-ranked few-shot examples inform generation   │
+│                                                             │
+│  Judge Pipeline (replaces team review)                      │
+│    Brand → Compliance → Platform Fit → Quality → Readiness  │
+│                                                             │
+│  Confidence-Based Routing                                   │
+│    Score ≥ 0.85 → auto-approve for publish handoff          │
+│    Score 0.65-0.84 → queue for human review                 │
+│    Score < 0.65 → reject, regenerate with feedback          │
+│                                                             │
+│  Feedback Loop                                              │
+│    Engagement metrics → top-performer extraction            │
+│    → few-shot example update → next generation cycle        │
+└─────────────────┬───────────────────────────────────────────┘
+                  ↓
+┌─────────────────────────────────────────────────────────────┐
+│  AUTOMATION LAYER (automations repo)                        │
+│  Scheduling, posting, platform API connectors, retries      │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### Why This Works
+
+| Traditional Team | AI-Automated Equivalent |
+|-----------------|------------------------|
+| Content strategist (1 FTE) | content_strategy + content_calendar skills |
+| Copywriter (2 FTE) | caption_writing + platform_adaptation skills + variant generation |
+| Brand manager (1 FTE) | brand_voice_enforcement skill + brand_consistency_judge |
+| Compliance reviewer (0.5 FTE) | compliance_judge (hard gate, zero tolerance) |
+| Social media coordinator (1 FTE) | publish_handoff skill + content_calendar skill |
+| Analytics manager (0.5 FTE) | performance_review skill + feedback loop |
+| **Total: ~6 FTE** | **1 operator + this agent** |
 
 ## Input Interface
 
@@ -118,14 +180,45 @@ interface SocialMediaManagerInput {
     topic: string;
     key_messages: string[];
     media_refs?: string[];          // URIs to creative assets
-    source_material?: string;       // long-form content to repurpose
+    source_material?: string;       // long-form content to repurpose/atomize
+  };
+
+  variant_config?: {
+    variants_per_post: number;      // default: 3
+    vary_dimensions: Array<"hook" | "tone" | "cta" | "length" | "format">;
+    few_shot_top_posts?: ContentItem[];  // top performers as generation context
+  };
+
+  atomization_input?: {
+    pillar_content_ref: string;     // URI to blog, whitepaper, transcript
+    pillar_content_type: "blog" | "whitepaper" | "video_transcript" | "podcast_transcript" | "press_release";
+    extract_types: Array<"key_points" | "quotes" | "statistics" | "stories" | "frameworks">;
   };
 
   performance_data?: {
     period: string;
     metrics: Record<string, number>;
     top_posts?: Array<{ id: string; engagement_rate: number }>;
+    posts_db?: PostPerformanceRecord[];  // structured historical data for feedback loop
   };
+}
+
+interface PostPerformanceRecord {
+  id: string;
+  platform: string;
+  copy: string;
+  topic_tags: string[];
+  tone: string;
+  hook_type: "question" | "statistic" | "story" | "bold_claim" | "how_to";
+  cta_type: string;
+  has_media: boolean;
+  published_at: string;
+  engagement_rate_24h: number;
+  engagement_rate_7d: number;
+  impressions_7d: number;
+  clicks: number;
+  shares: number;
+  source_content_id?: string;       // if repurposed, link to source
 }
 
 interface PlatformConstraints {
@@ -145,12 +238,32 @@ interface SocialMediaManagerOutput {
   status: "draft" | "review" | "approved" | "handoff_ready";
 
   content_items: ContentItem[];
+  content_atoms?: ContentAtom[];        // atomized units from pillar content
+  variant_sets?: VariantSet[];          // A/B variants grouped by base content
   campaign_plan?: CampaignPlan;
   strategy_recommendations?: StrategyRecommendation[];
   performance_summary?: PerformanceSummary;
 
   judge_results: JudgeResult[];
+  routing_decision: "auto_approve" | "human_review" | "reject";  // confidence-based
   handoff_payload?: PublishHandoff[];
+}
+
+interface ContentAtom {
+  id: string;
+  source_ref: string;                   // URI to pillar content
+  atom_type: "key_point" | "quote" | "statistic" | "story" | "framework";
+  text: string;
+  topic_tags: string[];
+  reuse_count: number;                   // how many posts have used this atom
+}
+
+interface VariantSet {
+  base_content_id: string;
+  varied_dimension: "hook" | "tone" | "cta" | "length" | "format";
+  variants: ContentItem[];
+  recommended_variant_id: string;        // highest predicted engagement
+  predicted_engagement_scores: Record<string, number>;  // variant_id → score
 }
 
 interface ContentItem {
@@ -164,6 +277,17 @@ interface ContentItem {
   thread_position?: number;
   quality_score: number;
   brand_alignment_score: number;
+  source_atoms?: string[];              // atom IDs this content was derived from
+  hook_type?: "question" | "statistic" | "story" | "bold_claim" | "how_to";
+  variant_of?: string;                  // base content ID if this is a variant
+  metadata: {                           // structured metadata for feedback loop
+    topic_tags: string[];
+    tone: string;
+    cta_type: string;
+    has_media: boolean;
+    content_pillar: string;
+    funnel_stage: string;
+  };
 }
 
 interface CampaignPlan {
