@@ -1,0 +1,22 @@
+name: DeploymentOrchestrator
+id: agent_004
+version: 1.0.0
+status: active
+description: Orchestrate deployment pipelines across environments
+
+dependencies:
+  - agent_id: agent_002
+    name: ComplianceValidator
+    required: true
+
+capabilities:
+  - deployment_planning
+  - environment_validation
+  - rollback_management
+
+tools:
+  - bash_execute
+  - file_read
+  - schema_validate
+
+skill: DeploymentOrchestrator.SKILL.md

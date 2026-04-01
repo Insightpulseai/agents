@@ -17,17 +17,28 @@ Agent framework, MCP servers, tool definitions, AI runtime coordination.
 
 ```
 /
-├── agents/             # Agent definitions
+├── .claude/            # Claude Code config (settings, commands)
+├── .mcp.json           # MCP server configuration
+├── agents/             # Agent definitions (.yml) and SKILL.md files
 ├── mcp-server/         # MCP server implementations
 ├── mcp-ipai-core/      # Core MCP tools
 ├── tools/              # Tool definitions
 ├── skills/             # Agent skills
 ├── prompts/            # Prompt templates
 ├── eval/               # Evaluation framework
-├── tests/              # Test suites
+├── tests/              # Test suites (unit, integration, e2e)
+├── scripts/            # Build, deploy, and hook scripts
+├── docs/               # Architecture and API documentation
 ├── mcp/                # Migrated from mcp-core repo
 └── knowledge/          # Living knowledge system (rules, hypotheses, facts)
 ```
+
+## Slash Commands
+
+Custom commands available via `.claude/commands/`:
+- `/review` — Code quality, security, and convention check
+- `/deploy` — Pre-deployment validation checklist
+- `/test-all` — Run full test suite with summary
 
 ## Rules
 

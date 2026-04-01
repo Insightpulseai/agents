@@ -1,0 +1,17 @@
+name: ValidationAgent
+id: agent_008
+version: 1.0.0
+status: active
+description: Validate data integrity, schemas, and cross-system consistency
+
+capabilities:
+  - data_validation
+  - schema_checking
+  - consistency_verification
+
+tools:
+  - schema_validate
+  - file_read
+  - database_query
+
+skill: ValidationAgent.SKILL.md
