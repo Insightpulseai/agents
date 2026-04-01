@@ -25,7 +25,8 @@ Agent framework, MCP servers, tool definitions, AI runtime coordination.
 ├── prompts/            # Prompt templates
 ├── eval/               # Evaluation framework
 ├── tests/              # Test suites
-└── mcp/                # Migrated from mcp-core repo
+├── mcp/                # Migrated from mcp-core repo
+└── knowledge/          # Living knowledge system (rules, hypotheses, facts)
 ```
 
 ## Rules
@@ -35,6 +36,25 @@ Agent framework, MCP servers, tool definitions, AI runtime coordination.
 3. Secrets via environment variables, never hardcoded
 4. MCP servers follow the MCP protocol specification
 5. Evaluation required for agent quality changes
+
+## Knowledge System
+
+Before starting a new task, review existing rules and hypotheses for this domain.
+Apply rules by default. Check if any hypothesis can be tested with today's work.
+
+At the end of each task, extract insights.
+Store them in domain folders, e.g.:
+```
+/knowledge/pricing/
+    knowledge.md    (facts and patterns)
+    hypotheses.md   (need more data)
+    rules.md        (confirmed — apply by default)
+```
+
+Maintain a `/knowledge/INDEX.md` that routes to each domain folder.
+
+When a hypothesis gets confirmed 5+ times, promote it to a rule.
+When a rule gets contradicted by new data, demote it back to a hypothesis.
 
 ## Cross-Repo Map
 
