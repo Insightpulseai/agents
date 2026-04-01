@@ -1,0 +1,16 @@
+name: ComplianceValidator
+id: agent_002
+version: 1.0.0
+status: active
+description: Validate specifications against compliance rules and security policies
+
+capabilities:
+  - schema_validation
+  - security_audit
+  - policy_check
+
+tools:
+  - schema_validate
+  - file_read
+
+skill: ComplianceValidator.SKILL.md

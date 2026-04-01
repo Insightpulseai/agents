@@ -37,6 +37,9 @@ env/
 .DS_Store
 ._*
 
+# Claude Code local settings (keep shared settings.json)
+.claude/settings.local.json
+
 # Editor files
 .vscode/
 .idea/

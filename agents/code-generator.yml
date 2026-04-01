@@ -1,0 +1,22 @@
+name: CodeGenerator
+id: agent_003
+version: 1.0.0
+status: active
+description: Generate production-ready, type-safe code from compliance-validated specifications
+
+dependencies:
+  - agent_id: agent_002
+    name: ComplianceValidator
+    required: true
+
+capabilities:
+  - code_generation
+  - module_scaffolding
+  - test_scaffolding
+
+tools:
+  - file_write
+  - file_read
+  - schema_validate
+
+skill: CodeGenerator.SKILL.md

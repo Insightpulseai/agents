@@ -1,0 +1,38 @@
+{
+  "permissions": {
+    "allow": [
+      "Read",
+      "Glob",
+      "Grep",
+      "Bash(git status)",
+      "Bash(git diff*)",
+      "Bash(git log*)",
+      "Bash(npm test*)",
+      "Bash(npm run lint*)",
+      "Bash(python -m pytest*)"
+    ],
+    "deny": []
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          { "type": "command", "command": "scripts/hooks/pre-tool-safety.sh" }
+        ]
+      }
+    ],
+    "PreCommit": [
+      {
+        "matcher": "*",
+        "hooks": [
+          { "type": "command", "command": "scripts/hooks/secret-scan.sh" }
+        ]
+      }
+    ]
+  },
+  "env": {
+    "MAX_THINKING_TOKENS": "10000",
+    "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "50"
+  }
+}

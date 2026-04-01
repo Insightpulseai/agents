@@ -1,0 +1,17 @@
+name: MemoryAgent
+id: agent_006
+version: 1.0.0
+status: active
+description: Manage persistent knowledge, context retrieval, and session memory
+
+capabilities:
+  - knowledge_storage
+  - context_retrieval
+  - session_summarization
+
+tools:
+  - file_read
+  - file_write
+  - search
+
+skill: MemoryAgent.SKILL.md
